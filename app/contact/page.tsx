@@ -8,6 +8,7 @@ import { brandConfig } from '@/config/brandConfig';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState('03:30 PM');
   const offices = brandConfig.offices;
 
   return (
@@ -114,8 +115,31 @@ export default function ContactPage() {
                   <input
                     type="date"
                     required
+                    defaultValue="2026-09-02"
                     className="w-full bg-[#0c0e14] border border-[#c5a880]/30 rounded-2xl px-4 py-3.5 text-xs text-[#f4f2ed] outline-none"
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest text-[#c5a880] font-bold block">
+                    Select Consultation Time Slot
+                  </label>
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    {['10:00 AM', '11:30 AM', '02:00 PM', '03:30 PM', '05:00 PM', '07:30 PM'].map((slot, i) => (
+                      <button
+                        key={slot}
+                        type="button"
+                        onClick={() => setSelectedSlot(slot)}
+                        className={`py-2 px-1 rounded-xl text-xs font-semibold text-center transition-all cursor-pointer ${
+                          selectedSlot === slot
+                            ? 'bg-[#c5a880] text-[#0c0e14] shadow-md'
+                            : 'bg-[#0c0e14] border border-white/10 text-[#eae6df]/70 hover:border-[#c5a880]/40'
+                        }`}
+                      >
+                        {slot}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <textarea

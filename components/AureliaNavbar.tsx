@@ -3,14 +3,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Menu, X, ArrowRight, Sparkles, Globe, ChevronDown } from 'lucide-react';
+import { Compass, Menu, X, ArrowRight, Sparkles, Globe, ChevronDown, Calendar } from 'lucide-react';
 import { useCurrency, SUPPORTED_CURRENCIES, CurrencyCode } from '@/context/CurrencyContext';
+import PrivateSlotBookingModal from '@/components/PrivateSlotBookingModal';
 
 export default function AureliaNavbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
+  const [slotModalOpen, setSlotModalOpen] = useState(false);
   const { currency, setCurrencyCode } = useCurrency();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -56,7 +58,7 @@ export default function AureliaNavbar() {
             : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent py-5 border-b border-white/5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-4">
           {/* 1. Left: Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group shrink-0">
             <div className="w-9 h-9 rounded-full border border-[#c5a880]/40 flex items-center justify-center text-[#c5a880] group-hover:border-[#c5a880] group-hover:scale-105 transition-all duration-300">
@@ -72,10 +74,10 @@ export default function AureliaNavbar() {
             </div>
           </Link>
 
-          {/* 2. Center & Right Unified Navigation with Global Currency Switcher */}
-          <div className="hidden xl:flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] font-medium">
+          {/* 2. Center & Right Unified Navigation */}
+          <div className="hidden xl:flex items-center gap-5 text-[11px] uppercase tracking-[0.18em] font-medium">
             {/* Primary Category Links */}
-            <nav className="flex items-center gap-5 text-[#eae6df]/80">
+            <nav className="flex items-center gap-4 text-[#eae6df]/80">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -96,10 +98,10 @@ export default function AureliaNavbar() {
             </nav>
 
             {/* Subtle Luxury Divider */}
-            <span className="h-4 w-[1px] bg-[#c5a880]/30 shrink-0 mx-1" aria-hidden="true" />
+            <span className="h-4 w-[1px] bg-[#c5a880]/30 shrink-0 mx-0.5" aria-hidden="true" />
 
             {/* Secondary Editorial & Concierge Links */}
-            <div className="flex items-center gap-5 text-[#eae6df]/70">
+            <div className="flex items-center gap-4 text-[#eae6df]/70">
               {secondaryLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -162,18 +164,38 @@ export default function AureliaNavbar() {
               )}
             </div>
 
-            {/* CTA Button */}
+            {/* Book Private Slot Action Button */}
+            <button
+              type="button"
+              onClick={() => setSlotModalOpen(true)}
+              className="px-4 py-2 rounded-full border border-[#c5a880] bg-[#c5a880]/15 hover:bg-[#c5a880] text-[#c5a880] hover:text-[#0c0e14] transition-all duration-300 font-semibold tracking-widest text-[10px] hover:shadow-lg hover:shadow-[#c5a880]/20 flex items-center gap-1.5 shrink-0 cursor-pointer"
+            >
+              <Calendar className="w-3 h-3" />
+              <span>Book Slot</span>
+            </button>
+
+            {/* Plan Journey Button */}
             <Link
               href="/#planner"
-              className="ml-2 px-5 py-2.5 rounded-full border border-[#c5a880]/60 bg-[#c5a880]/10 hover:bg-[#c5a880] text-[#f4f2ed] hover:text-[#0c0e14] transition-all duration-300 font-semibold tracking-widest text-[10px] hover:shadow-lg hover:shadow-[#c5a880]/20 flex items-center gap-1.5 shrink-0"
+              className="px-4 py-2 rounded-full bg-[#c5a880] hover:bg-[#b89768] text-[#0c0e14] transition-all duration-300 font-semibold tracking-widest text-[10px] shadow-lg shadow-[#c5a880]/20 flex items-center gap-1.5 shrink-0"
             >
-              <span>Plan Your Journey</span>
+              <span>Plan Journey</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
           {/* 3. Mobile / Tablet Hamburger Toggle */}
-          <div className="flex items-center gap-3 xl:hidden">
+          <div className="flex items-center gap-2.5 xl:hidden">
+            {/* Mobile Slot Booking Trigger */}
+            <button
+              type="button"
+              onClick={() => setSlotModalOpen(true)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#c5a880] text-[#0c0e14] text-[9px] font-bold uppercase tracking-wider"
+            >
+              <Calendar className="w-3 h-3" />
+              <span>Slot</span>
+            </button>
+
             {/* Mobile Currency Pill */}
             <button
               type="button"
@@ -257,11 +279,22 @@ export default function AureliaNavbar() {
             </nav>
           </div>
 
-          <div className="space-y-4 pt-6 border-t border-[#c5a880]/20">
+          <div className="space-y-3 pt-6 border-t border-[#c5a880]/20">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setSlotModalOpen(true);
+              }}
+              className="block w-full py-3.5 text-center rounded-full border border-[#c5a880] bg-[#c5a880]/15 text-[#c5a880] font-semibold text-xs tracking-[0.25em] uppercase shadow-lg cursor-pointer"
+            >
+              Book Private Consultation Slot
+            </button>
+
             <Link
               href="/#planner"
               onClick={() => setMobileMenuOpen(false)}
-              className="block w-full py-4 text-center rounded-full bg-[#c5a880] text-[#0c0e14] font-semibold text-xs tracking-[0.25em] uppercase shadow-xl"
+              className="block w-full py-3.5 text-center rounded-full bg-[#c5a880] text-[#0c0e14] font-semibold text-xs tracking-[0.25em] uppercase shadow-xl"
             >
               Plan Your Bespoke Journey
             </Link>
@@ -272,6 +305,12 @@ export default function AureliaNavbar() {
           </div>
         </div>
       )}
+
+      {/* 5. Dedicated Private Slot Booking Modal */}
+      <PrivateSlotBookingModal
+        isOpen={slotModalOpen}
+        onClose={() => setSlotModalOpen(false)}
+      />
     </>
   );
 }
