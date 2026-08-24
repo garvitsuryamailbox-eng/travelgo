@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   ],
 };
 
+import LiveBookingTicker from "@/components/LiveBookingTicker";
+
 export default function RootLayout({
   children,
 }: {
@@ -34,6 +36,7 @@ export default function RootLayout({
     <html lang="en" className={`${jakarta.variable} scroll-smooth`}>
       <body className="min-h-screen flex flex-col font-sans antialiased text-slate-900 bg-slate-50">
         {children}
+        <LiveBookingTicker />
       </body>
     </html>
   );
