@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Compass, Mail, Phone, MapPin, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { brandConfig } from '@/config/brandConfig';
 
 export default function AureliaFooter() {
   return (
@@ -94,13 +95,13 @@ export default function AureliaFooter() {
             <div className="space-y-2.5 text-xs text-[#eae6df]/80 pt-1 font-light">
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-[#c5a880] shrink-0" />
-                <a href="mailto:concierge@aureliatravel.com" className="hover:text-[#c5a880] transition-colors">
-                  concierge@aureliatravel.com
+                <a href={`mailto:${brandConfig.contact.generalEmail}`} className="hover:text-[#c5a880] transition-colors">
+                  {brandConfig.contact.generalEmail}
                 </a>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-[#c5a880] shrink-0" />
-                <span>+91 22 6982 9900 / +44 20 7946 0912</span>
+                <span>{brandConfig.contact.primaryPhone} / {brandConfig.contact.internationalPhone}</span>
               </div>
               <div className="flex items-start gap-2">
                 <MapPin className="w-3.5 h-3.5 text-[#c5a880] shrink-0 mt-0.5" />

@@ -4,36 +4,11 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Sparkles, CheckCircle2, ArrowRight, ShieldCheck } from 'lucide-react';
 import AureliaNavbar from '@/components/AureliaNavbar';
 import AureliaFooter from '@/components/AureliaFooter';
+import { brandConfig } from '@/config/brandConfig';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
-
-  const offices = [
-    {
-      city: 'Mumbai',
-      address: 'Maker Chambers VI, Nariman Point, Mumbai 400021, India',
-      phone: '+91 22 6982 9900',
-      email: 'mumbai@aureliatravel.com',
-    },
-    {
-      city: 'London',
-      address: '14 Berkeley Square, Mayfair, London W1J 6BQ, UK',
-      phone: '+44 20 7946 0912',
-      email: 'london@aureliatravel.com',
-    },
-    {
-      city: 'Zurich & Geneva',
-      address: 'Bahnhofstrasse 28, 8001 Zürich / Rue du Rhône 42, Geneva',
-      phone: '+41 22 518 8900',
-      email: 'switzerland@aureliatravel.com',
-    },
-    {
-      city: 'New York',
-      address: '767 Fifth Avenue, Manhattan, New York, NY 10153, USA',
-      phone: '+1 212 555 0198',
-      email: 'newyork@aureliatravel.com',
-    },
-  ];
+  const offices = brandConfig.offices;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0c0e14] text-[#f4f2ed]">
