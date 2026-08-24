@@ -1,4 +1,4 @@
-# ✈️ TravelGo - Online Travel Booking Platform
+# 👑 AURELIA — Luxury Travel & Bespoke Journeys Platform
 
 <div align="center">
 
@@ -6,165 +6,110 @@
 ![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8?style=for-the-badge&logo=tailwind-css)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Aesthetics](https://img.shields.io/badge/Aesthetics-Ultra--Luxury-c5a880?style=for-the-badge)
 
-**"Plan Better. Travel Further."**
+**"Travel Beyond Ordinary."**
 
-A modern, fast, and responsive full-stack online travel booking portal built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS v4**, and **Lucide Icons**.
+An ultra-luxury private journey and bespoke concierge platform built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Cormorant Garamond Editorial Serif Typography**.
 
-[Explore Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [API Documentation](#-api-documentation) • [Folder Structure](#-project-structure)
+[Signature Journeys](#-signature-journeys) • [Exceptional Stays](#-exceptional-stays) • [Private Concierge](#-private-concierge) • [The Aurelia Journal](#-the-aurelia-journal) • [Routes](#-complete-luxury-routes)
 
 </div>
 
 ---
 
-## 🌟 Overview
+## 🌟 Brand Philosophy
 
-**TravelGo** is a comprehensive online travel agency (OTA) demonstration platform designed to provide seamless booking experiences for Indian and global travelers. It offers unified search, selection, and simulated checkout across six primary travel verticals with instant ticket generation and real-time JSON data persistence.
+**AURELIA** represents the pinnacle of bespoke private travel. Designed as an exquisite fusion of a luxury travel publication, high-end private stay collection, and ultra-discreet travel concierge, Aurelia crafts unscripted journeys for discerning private clients.
+
+- **Color Palette**: Deep Charcoal (`#0c0e14`, `#12151e`), Warm Ivory (`#faf9f6`), and Champagne Gold accents (`#c5a880`).
+- **Typography**: Editorial Serif (`Cormorant Garamond`) paired with modern tracked sans-serif (`Plus Jakarta Sans`).
+- **Aesthetic**: Minimalist, calm, expensive, cinematic, and generous with whitespace.
 
 ---
 
-## 🚀 Features
+## 🏛️ Core Features & Architecture
 
-### 1. 🧳 6 Major Booking Verticals
-- ✈️ **Flights**: Search domestic and international flight routes with one-way and round-trip filters.
-- 🏨 **Hotels & Resorts**: Discover luxury stays, beach villas, and heritage palaces with amenities and price filters.
-- 🚆 **Trains**: Train search with PNR status simulations, Vande Bharat Express, and Rajdhani Express routes.
-- 🚌 **Buses**: Multi-axle AC Volvo and sleeper buses with boarding and dropping points.
-- 🏖️ **Holidays**: Curated tour packages (Kashmir, Kerala, Rajasthan, Dubai) with complete itineraries.
-- 🚖 **Outstation Cabs**: Intercity sedans and SUVs with fixed pricing and chauffeur details.
+### 1. 🧭 Bespoke Journey Planner
+Interactive luxury trip curator: Destination, Preferred Season, Group Dynamics, and Journey Styles (*Private Escape, Romantic, Adventure, Wellness, Cultural, Family, Luxury Safari, Beach Retreat*).
 
-### 2. ⚡ Real-Time Booking & JSON Storage
-- **Automatic Persistence**: Every booking made through the multi-step checkout or instant demo modal is written in real-time to [`package.json`](package.json) and [`data/bookings.json`](data/bookings.json) via backend API routes.
-- **Instant Voucher Generation**: Generates printable e-tickets and confirmed PNRs.
+### 2. 🛥️ Signature Journeys
+Curated private itineraries including:
+- **Amalfi Coast**: *An Italian summer, reimagined.*
+- **Maldives**: *Private islands. Endless horizons.*
+- **Swiss Alps**: *Where silence meets the summit.*
+- **Kyoto**: *Tradition, tranquility and timeless beauty.*
+- **Rajasthan**: *Palaces, desert skies and royal heritage.*
+- **Bora Bora**: *The world's most pristine lagoon.*
 
-### 3. 🎯 Clean & Responsive UI
-- **Minimalist Aesthetic**: Clean light theme with soft slate cards, crisp typography, and mobile drawer navigation.
-- **Fast Performance**: Static site generation (SSG) with zero runtime bloat.
+### 3. 🏰 Exceptional Stays & Sanctuaries
+- **The Azure Palace** (Amalfi Coast, Italy)
+- **Ocean Pearl Private Island** (Baa Atoll, Maldives)
+- **Alpine Crown Lodge** (Zermatt, Switzerland)
+- **The Raj Heritage Palace** (Udaipur, Rajasthan)
+
+### 4. 📰 The Aurelia Journal
+Editorial luxury publication with full dispatches:
+- *"48 Hours on the Amalfi Coast"*
+- *"Where to Find Silence in the Swiss Alps"*
+- *"Japan Beyond Tokyo: Zen Gardens & Ryokans"*
+- *"Inside Rajasthan's Royal Heritage"*
+- *"Five Private Island Escapes"*
+
+### 5. 👑 Private Client Concierge Desk
+- 24/7 Dedicated Assistance
+- Private Aviation & Superyacht Charters
+- Guaranteed Priority Table Access at 3-Star Michelin venues
+- Membership Tiers (*Voyager*, *Privilege*, *Private Sovereign*)
+
+---
+
+## 📂 Complete Luxury Routes
+
+| Route | Description |
+| :--- | :--- |
+| **`/`** | Cinematic homepage with Hero, Journey Planner, Signature Journeys, Stays, Experiences, Bespoke Studio, and Journal |
+| **`/journeys`** | Full portfolio of private expeditions with region filters and inquiry modals |
+| **`/destinations`** | Global luxury destination atlas with regional highlights and best season guides |
+| **`/stays`** | Exceptional hotel and private villa collection with property type filters |
+| **`/stays/[id]`** | Dynamic stay detail page with full-bleed hero gallery, suites selector, dining/spa highlights, and reservation sidebar |
+| **`/experiences`** | Exclusive bespoke activities (Superyachts, Michelin Dining, Alps Helicopters, Desert Glamping) |
+| **`/private-travel`** | Private aviation, island buyouts, and confidential brief submission |
+| **`/journal`** | The Aurelia Journal editorial index with category filters |
+| **`/journal/[slug]`** | Dynamic article reading experience with curator quotes, takeaways, and related stays |
+| **`/concierge`** | Private concierge membership tiers and direct consultation booking |
+| **`/contact`** | Global regional desks (London, Geneva, New York, Tokyo) and appointment scheduler |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology | Version | Description |
-| :--- | :--- | :--- |
-| **Next.js** | `16.3.2` | React Framework (App Router, Server Components & API Routes) |
-| **React** | `19.2.8` | Component Architecture & UI Hooks |
-| **TypeScript** | `^5.0` | Strict static type checking |
-| **Tailwind CSS** | `^4.0` | Modern utility-first CSS styling |
-| **Lucide React** | `^1.34` | Crisp, scalable SVG icon set |
-| **Font** | Google Fonts | Plus Jakarta Sans typography |
+- **Framework**: Next.js 16.3.2 (App Router & Turbopack)
+- **Language**: TypeScript 5.0 (Strict mode)
+- **Styling**: Tailwind CSS with custom luxury tokens
+- **Typography**: Cormorant Garamond & Plus Jakarta Sans via Google Fonts
+- **Icons**: Lucide React
 
 ---
 
-## 📂 Project Structure
+## 🚀 Getting Started
 
-```text
-travel-booking/
-├── app/
-│   ├── api/
-│   │   └── bookings/
-│   │       └── route.ts          # REST API for reading & saving bookings to JSON
-│   ├── booking/
-│   │   └── page.tsx              # Multi-step checkout & confirmed ticket voucher
-│   ├── flights/                  # Flight discovery & search
-│   ├── hotels/                   # Hotel listings & detailed property view
-│   ├── trains/                   # Train booking engine
-│   ├── buses/                    # Bus booking engine
-│   ├── cabs/                     # Outstation cab booking
-│   ├── holidays/                 # Tour packages explorer
-│   ├── my-trips/                 # User booking history dashboard
-│   ├── globals.css               # Clean Tailwind CSS design system
-│   ├── layout.tsx                # Root layout with fonts & metadata
-│   └── page.tsx                  # Clean, fast landing homepage
-├── components/
-│   ├── Navbar.tsx                # Navigation header with mobile toggle
-│   ├── Hero.tsx                  # Hero section with travel search form
-│   ├── PopularDestinations.tsx   # Top destinations cards
-│   ├── FeaturedHotels.tsx        # Handpicked hotels & resorts
-│   ├── TravelPackages.tsx        # Holiday tour packages
-│   ├── OffersSection.tsx         # Bank discount coupons & promo codes
-│   ├── WhyChooseUs.tsx           # Value pillars
-│   ├── CustomerReviews.tsx       # Verified traveler feedback
-│   ├── Newsletter.tsx            # Email subscription form
-│   └── Footer.tsx                # Footer with directory links & contact info
-├── data/
-│   ├── bookings.json             # Stored user bookings database
-│   └── travelData.ts             # Static dataset for hotels, flights, and packages
-└── package.json                  # Dependencies, scripts & synced booking records
-```
-
----
-
-## 💻 Getting Started
-
-### Prerequisites
-- Node.js (v18.17.0 or higher recommended)
-- npm, yarn, or pnpm
-
-### 1. Clone the Repository
 ```bash
+# Clone the repository
 git clone https://github.com/garvitsuryamailbox-eng/travelgo.git
-cd travelgo
-```
 
-### 2. Install Dependencies
-```bash
+# Install dependencies
 npm install
-```
 
-### 3. Run Development Server
-```bash
+# Run the local development server
 npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-### 4. Build for Production
-```bash
+# Build for production
 npm run build
-npm run start
 ```
 
 ---
 
-## 📡 API Documentation
-
-### `POST /api/bookings`
-Saves a new booking record to disk (`package.json` and `data/bookings.json`).
-
-**Request Body:**
-```json
-{
-  "type": "hotel",
-  "title": "Taj Exotica Resort & Spa, Goa",
-  "amount": 14997,
-  "paymentMethod": "UPI (Google Pay)",
-  "customer": {
-    "name": "Aditya Verma",
-    "email": "aditya.verma@example.com",
-    "phone": "+91 9876543210"
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Booking successfully saved to data/bookings.json and package.json",
-  "booking": {
-    "id": "BK-892145",
-    "status": "CONFIRMED",
-    "bookingDate": "2026-08-24T18:30:00.000Z"
-  }
-}
-```
-
-### `GET /api/bookings`
-Returns an array of all confirmed bookings.
-
----
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
+<div align="center">
+  <sub>© 2026 AURELIA Private Travel Collection. Luxury Demonstration Project.</sub>
+</div>

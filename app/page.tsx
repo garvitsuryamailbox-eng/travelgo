@@ -1,65 +1,65 @@
-import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
-import OffersSection from '@/components/OffersSection';
-import PopularDestinations from '@/components/PopularDestinations';
-import FeaturedHotels from '@/components/FeaturedHotels';
-import TravelPackages from '@/components/TravelPackages';
-import ExperiencesSection from '@/components/ExperiencesSection';
-import ArticleHubSection from '@/components/ArticleHubSection';
-import WhyChooseUs from '@/components/WhyChooseUs';
-import RewardsSection from '@/components/RewardsSection';
-import CustomerReviews from '@/components/CustomerReviews';
-import FAQSection from '@/components/FAQSection';
-import Newsletter from '@/components/Newsletter';
-import Footer from '@/components/Footer';
+import AureliaNavbar from '@/components/AureliaNavbar';
+import AureliaHero from '@/components/AureliaHero';
+import AureliaJourneyPlanner from '@/components/AureliaJourneyPlanner';
+import SignatureJourneysSection from '@/components/SignatureJourneysSection';
+import PrivateEscapesSection from '@/components/PrivateEscapesSection';
+import ExceptionalStaysSection from '@/components/ExceptionalStaysSection';
+import AureliaExperiencesSection from '@/components/AureliaExperiencesSection';
+import BespokeTravelSection from '@/components/BespokeTravelSection';
+import ConciergeFeatureSection from '@/components/ConciergeFeatureSection';
+import JournalEditorialSection from '@/components/JournalEditorialSection';
+import TripInspirationSection from '@/components/TripInspirationSection';
+import AureliaTestimonials from '@/components/AureliaTestimonials';
+import AureliaNewsletter from '@/components/AureliaNewsletter';
+import AureliaFooter from '@/components/AureliaFooter';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
-      {/* Sticky Header with Navigation & Auth */}
-      <Navbar />
+    <div className="flex flex-col min-h-screen bg-[#0c0e14] text-[#f4f2ed]">
+      {/* 1. Transparent-to-Solid Luxury Sticky Navbar */}
+      <AureliaNavbar />
 
-      {/* Main Content Sections */}
+      {/* Main Luxury Content Flow */}
       <main className="flex-1">
-        {/* 1. Hero Section with 6-Tab Booking Search Engine */}
-        <Hero />
+        {/* 2. Full-Screen Cinematic Luxury Hero */}
+        <AureliaHero />
 
-        {/* 2. Exclusive Offers & Bank Discount Coupons */}
-        <OffersSection />
+        {/* 3. Luxury Bespoke Journey Planner */}
+        <AureliaJourneyPlanner />
 
-        {/* 3. Popular Tourist Destinations */}
-        <PopularDestinations />
+        {/* 4. Signature Curated Expeditions */}
+        <SignatureJourneysSection />
 
-        {/* 4. Handpicked Stays & Luxury Hotels */}
-        <FeaturedHotels />
+        {/* 5. Private Escapes & Sanctuaries */}
+        <PrivateEscapesSection />
 
-        {/* 5. Handcrafted Holiday Packages */}
-        <TravelPackages />
+        {/* 6. Exceptional Places to Stay */}
+        <ExceptionalStaysSection />
 
-        {/* 6. Experiences Worth Travelling For */}
-        <ExperiencesSection />
+        {/* 7. Experiences Worth Remembering */}
+        <AureliaExperiencesSection />
 
-        {/* 7. Plan Your Trip: Luxury Article Hub (visitabudhabi style) */}
-        <ArticleHubSection />
+        {/* 8. Bespoke Travel Design Studio */}
+        <BespokeTravelSection />
 
-        {/* 8. Why TravelGo - 4 Core Value Pillars */}
-        <WhyChooseUs />
+        {/* 9. Private Client Concierge Desk */}
+        <ConciergeFeatureSection />
 
-        {/* 9. TravelGo Rewards & Loyalty Club */}
-        <RewardsSection />
+        {/* 10. The Aurelia Journal */}
+        <JournalEditorialSection />
 
-        {/* 10. Verified Customer Reviews & Ratings */}
-        <CustomerReviews />
+        {/* 11. Global Destination Horizons & Inspiration */}
+        <TripInspirationSection />
 
-        {/* 11. Frequently Asked Questions */}
-        <FAQSection />
+        {/* 12. Private Client Testimonials */}
+        <AureliaTestimonials />
 
-        {/* 12. Instant Discount Newsletter */}
-        <Newsletter />
+        {/* 13. The Art of Travel Dispatch */}
+        <AureliaNewsletter />
       </main>
 
-      {/* Professional Footer */}
-      <Footer />
+      {/* 14. Sophisticated Luxury Footer */}
+      <AureliaFooter />
     </div>
   );
 }
