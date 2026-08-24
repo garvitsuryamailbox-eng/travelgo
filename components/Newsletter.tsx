@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Mail, CheckCircle2 } from 'lucide-react';
+import { Mail, CheckCircle2, Sparkles, Send } from 'lucide-react';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
@@ -15,39 +15,49 @@ export default function Newsletter() {
   };
 
   return (
-    <section id="contact" className="py-16 bg-sky-600 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="max-w-xl mx-auto">
-          <h2 className="text-3xl font-bold tracking-tight mb-2">
-            Subscribe to Our Newsletter
+    <section id="contact" className="py-20 bg-gradient-to-r from-sky-600 via-indigo-600 to-teal-600 text-white relative overflow-hidden">
+      {/* Decorative Orbs */}
+      <div className="absolute top-0 right-10 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-10 w-80 h-80 bg-black/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <div className="max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold uppercase tracking-wider mb-4 border border-white/20">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Join 120k+ Happy Travelers</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-4 leading-tight">
+            Unlock Exclusive Travel Discounts
           </h2>
-          <p className="text-sky-100 text-sm sm:text-base mb-6">
-            Get special discounts, exclusive travel deals, and destination updates straight to your inbox.
+          <p className="text-sky-100 text-sm sm:text-base mb-8 leading-relaxed">
+            Get instant secret deals, flat 20% discount coupon codes, and curated weekend getaway guides sent directly to your inbox.
           </p>
 
           {submitted ? (
-            <div className="p-4 rounded-lg bg-white/10 text-white text-sm flex items-center justify-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-300" />
-              <span>Thank you for subscribing! We will send deals to {email}.</span>
+            <div className="p-5 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-semibold flex items-center justify-center gap-3 animate-in zoom-in-95 duration-300">
+              <CheckCircle2 className="w-6 h-6 text-emerald-300 shrink-0" />
+              <span>🎉 Welcome aboard! We have sent your 20% discount coupon to <strong>{email}</strong>.</span>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
               <div className="relative flex-1">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 text-sm outline-none"
+                  placeholder="Enter your email address..."
+                  className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white text-slate-900 placeholder:text-slate-400 text-sm font-semibold outline-none shadow-xl focus:ring-2 focus:ring-amber-400"
                 />
               </div>
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-colors cursor-pointer"
+                className="px-7 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-950 text-white font-extrabold text-sm shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
               >
-                Subscribe
+                <span>Subscribe</span>
+                <Send className="w-4 h-4" />
               </button>
             </form>
           )}

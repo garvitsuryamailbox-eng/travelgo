@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import OffersSection from '@/components/OffersSection';
 import PopularDestinations from '@/components/PopularDestinations';
 import FeaturedHotels from '@/components/FeaturedHotels';
 import TravelPackages from '@/components/TravelPackages';
@@ -10,35 +11,38 @@ import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-white text-slate-900">
-      {/* Navigation Bar */}
+    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
+      {/* 1. Animated Header Navigation */}
       <Navbar />
 
-      {/* Main Content */}
+      {/* 2. Main Travel Content */}
       <main className="flex-1">
-        {/* Clean Hero with Booking Search */}
+        {/* Animated Hero Section with Multi-Tab Search */}
         <Hero />
 
-        {/* Popular Destinations */}
+        {/* Bank Deals & Promo Codes with 1-Click Copy */}
+        <OffersSection />
+
+        {/* Popular Destinations with Filter Tabs */}
         <PopularDestinations />
 
-        {/* Featured Hotels */}
+        {/* Featured Hotels & Resorts */}
         <FeaturedHotels />
 
-        {/* Holiday Travel Packages */}
+        {/* Handcrafted Holiday Packages */}
         <TravelPackages />
 
         {/* Why Choose Us */}
         <WhyChooseUs />
 
-        {/* Customer Reviews */}
+        {/* Customer Reviews & Ratings */}
         <CustomerReviews />
 
-        {/* Newsletter */}
+        {/* Instant Discount Newsletter */}
         <Newsletter />
       </main>
 
-      {/* Footer */}
+      {/* 3. Professional Footer */}
       <Footer />
     </div>
   );

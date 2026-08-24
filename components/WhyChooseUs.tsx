@@ -1,41 +1,49 @@
 'use client';
 
 import React from 'react';
-import { Tag, Zap, Headphones, ShieldCheck } from 'lucide-react';
+import { Tag, Zap, Headphones, ShieldCheck, Sparkles } from 'lucide-react';
 
 export default function WhyChooseUs() {
   const features = [
     {
       icon: Tag,
       title: 'Best Rates Guaranteed',
-      description: 'Competitive prices with zero hidden charges on all bookings.',
+      description: 'Competitive prices with zero hidden charges and special bank coupon discounts.',
+      color: 'bg-sky-500/10 text-sky-600 border-sky-200',
     },
     {
       icon: Zap,
-      title: 'Fast & Instant Booking',
-      description: 'Instant ticket confirmation and receipt sent directly to your email.',
+      title: 'Instant Ticket Confirmation',
+      description: 'Confirmed booking vouchers and PNRs generated in real-time right on your screen.',
+      color: 'bg-amber-500/10 text-amber-600 border-amber-200',
     },
     {
       icon: Headphones,
-      title: '24/7 Customer Support',
-      description: 'Our dedicated support team is available around the clock to assist you.',
+      title: '24/7 Dedicated Support',
+      description: 'Our customer support concierge is always available on chat, call, and WhatsApp.',
+      color: 'bg-teal-500/10 text-teal-600 border-teal-200',
     },
     {
       icon: ShieldCheck,
       title: '100% Verified Properties',
-      description: 'Handpicked hotels and resorts verified for safety, hygiene, and comfort.',
+      description: 'Handpicked hotels, villas, and luxury resorts verified for hygiene and safety.',
+      color: 'bg-rose-500/10 text-rose-600 border-rose-200',
     },
   ];
 
   return (
-    <section id="why-us" className="py-16 bg-white">
+    <section id="why-us" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
-            Why Choose TravelGo
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-sky-500" />
+            <span>The TravelGo Advantage</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Why Travelers Choose Us
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base mt-2">
-            We make your travel planning easy, secure, and affordable.
+          <p className="text-slate-500 text-sm sm:text-base mt-2">
+            We make your travel journey smooth, secure, transparent, and completely hassle-free.
           </p>
         </div>
 
@@ -45,13 +53,19 @@ export default function WhyChooseUs() {
             return (
               <div
                 key={item.title}
-                className="p-6 rounded-xl border border-slate-200 bg-slate-50 text-center"
+                className="group p-7 rounded-3xl border border-slate-200/80 bg-slate-50/50 hover:bg-white hover:shadow-xl hover:border-sky-300 hover:-translate-y-2 transition-all duration-300 text-center flex flex-col items-center"
               >
-                <div className="w-12 h-12 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center mx-auto mb-4">
-                  <Icon className="w-6 h-6" />
+                <div
+                  className={`w-14 h-14 rounded-2xl ${item.color} border flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-sm`}
+                >
+                  <Icon className="w-7 h-7" />
                 </div>
-                <h3 className="font-bold text-base text-slate-900 mb-2">{item.title}</h3>
-                <p className="text-xs text-slate-600 leading-relaxed">{item.description}</p>
+                <h3 className="font-extrabold text-lg text-slate-900 mb-2 group-hover:text-sky-600 transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {item.description}
+                </p>
               </div>
             );
           })}
