@@ -4,45 +4,57 @@ import OffersSection from '@/components/OffersSection';
 import PopularDestinations from '@/components/PopularDestinations';
 import FeaturedHotels from '@/components/FeaturedHotels';
 import TravelPackages from '@/components/TravelPackages';
+import ExperiencesSection from '@/components/ExperiencesSection';
 import WhyChooseUs from '@/components/WhyChooseUs';
+import RewardsSection from '@/components/RewardsSection';
 import CustomerReviews from '@/components/CustomerReviews';
+import FAQSection from '@/components/FAQSection';
 import Newsletter from '@/components/Newsletter';
 import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900">
-      {/* 1. Animated Header Navigation */}
+      {/* Sticky Header with Navigation & Auth */}
       <Navbar />
 
-      {/* 2. Main Travel Content */}
+      {/* Main Content Sections */}
       <main className="flex-1">
-        {/* Animated Hero Section with Multi-Tab Search */}
+        {/* 1. Hero Section with 6-Tab Booking Search Engine */}
         <Hero />
 
-        {/* Bank Deals & Promo Codes with 1-Click Copy */}
+        {/* 2. Exclusive Offers & Bank Discount Coupons */}
         <OffersSection />
 
-        {/* Popular Destinations with Filter Tabs */}
+        {/* 3. Popular Tourist Destinations */}
         <PopularDestinations />
 
-        {/* Featured Hotels & Resorts */}
+        {/* 4. Handpicked Stays & Luxury Hotels */}
         <FeaturedHotels />
 
-        {/* Handcrafted Holiday Packages */}
+        {/* 5. Handcrafted Holiday Packages */}
         <TravelPackages />
 
-        {/* Why Choose Us */}
+        {/* 6. Experiences Worth Travelling For */}
+        <ExperiencesSection />
+
+        {/* 7. Why TravelGo - 4 Core Value Pillars */}
         <WhyChooseUs />
 
-        {/* Customer Reviews & Ratings */}
+        {/* 8. TravelGo Rewards & Loyalty Club */}
+        <RewardsSection />
+
+        {/* 9. Verified Customer Reviews & Ratings */}
         <CustomerReviews />
 
-        {/* Instant Discount Newsletter */}
+        {/* 10. Frequently Asked Questions */}
+        <FAQSection />
+
+        {/* 11. Instant Discount Newsletter */}
         <Newsletter />
       </main>
 
-      {/* 3. Professional Footer */}
+      {/* Professional Footer */}
       <Footer />
     </div>
   );
