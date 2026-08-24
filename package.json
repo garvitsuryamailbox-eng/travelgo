@@ -23,21 +23,5 @@
     "eslint-config-next": "16.3.2",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "bookings": [
-    {
-      "id": "BK-872874",
-      "type": "flight",
-      "title": "IndiGo Flight DEL to GOI",
-      "customer": {
-        "name": "Test User",
-        "email": "test@example.com",
-        "phone": "+91 9999999999"
-      },
-      "amount": 4999,
-      "status": "CONFIRMED",
-      "bookingDate": "2026-08-24T15:47:14.671Z",
-      "paymentMethod": "UPI / Card (Online)"
-    }
-  ]
+  }
 }
