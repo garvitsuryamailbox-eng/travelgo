@@ -1,65 +1,28 @@
-import AureliaNavbar from '@/components/AureliaNavbar';
-import AureliaHero from '@/components/AureliaHero';
-import AureliaJourneyPlanner from '@/components/AureliaJourneyPlanner';
-import SignatureJourneysSection from '@/components/SignatureJourneysSection';
-import PrivateEscapesSection from '@/components/PrivateEscapesSection';
-import ExceptionalStaysSection from '@/components/ExceptionalStaysSection';
-import AureliaExperiencesSection from '@/components/AureliaExperiencesSection';
-import BespokeTravelSection from '@/components/BespokeTravelSection';
-import ConciergeFeatureSection from '@/components/ConciergeFeatureSection';
-import JournalEditorialSection from '@/components/JournalEditorialSection';
-import TripInspirationSection from '@/components/TripInspirationSection';
-import AureliaTestimonials from '@/components/AureliaTestimonials';
-import AureliaNewsletter from '@/components/AureliaNewsletter';
-import AureliaFooter from '@/components/AureliaFooter';
+import React from "react";
+import { Sparkles, Terminal } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#0c0e14] text-[#f4f2ed]">
-      {/* 1. Transparent-to-Solid Luxury Sticky Navbar */}
-      <AureliaNavbar />
+    <main className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+      <div className="max-w-xl mx-auto space-y-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/20 bg-blue-500/10 text-blue-400 text-xs font-semibold uppercase tracking-wider">
+          <Sparkles className="w-4 h-4" />
+          <span>Clean Workspace Ready</span>
+        </div>
 
-      {/* Main Luxury Content Flow */}
-      <main className="flex-1">
-        {/* 2. Full-Screen Cinematic Luxury Hero */}
-        <AureliaHero />
+        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white">
+          Ready for Your New Project
+        </h1>
 
-        {/* 3. Luxury Bespoke Journey Planner */}
-        <AureliaJourneyPlanner />
+        <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
+          The workspace has been completely cleared and reset. Tell me what you want to build next, and we will create it from scratch with modern design and full functionality.
+        </p>
 
-        {/* 4. Signature Curated Expeditions */}
-        <SignatureJourneysSection />
-
-        {/* 5. Private Escapes & Sanctuaries */}
-        <PrivateEscapesSection />
-
-        {/* 6. Exceptional Places to Stay */}
-        <ExceptionalStaysSection />
-
-        {/* 7. Experiences Worth Remembering */}
-        <AureliaExperiencesSection />
-
-        {/* 8. Bespoke Travel Design Studio */}
-        <BespokeTravelSection />
-
-        {/* 9. Private Client Concierge Desk */}
-        <ConciergeFeatureSection />
-
-        {/* 10. The Aurelia Journal */}
-        <JournalEditorialSection />
-
-        {/* 11. Global Destination Horizons & Inspiration */}
-        <TripInspirationSection />
-
-        {/* 12. Private Client Testimonials */}
-        <AureliaTestimonials />
-
-        {/* 13. The Art of Travel Dispatch */}
-        <AureliaNewsletter />
-      </main>
-
-      {/* 14. Sophisticated Luxury Footer */}
-      <AureliaFooter />
-    </div>
+        <div className="pt-4 flex items-center justify-center gap-3 text-xs text-slate-500 font-mono">
+          <Terminal className="w-4 h-4 text-emerald-400" />
+          <span>Next.js 16 • Tailwind CSS 4 • TypeScript • App Router</span>
+        </div>
+      </div>
+    </main>
   );
 }
