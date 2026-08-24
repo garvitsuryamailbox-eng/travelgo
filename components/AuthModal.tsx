@@ -36,8 +36,8 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
     setTimeout(() => {
       if (onLoginSuccess) {
         onLoginSuccess({
-          name: fullName || 'TravelGo Member',
-          email: email || `${mobileNumber}@travelgo.demo`,
+          name: fullName || 'Aurelia Member',
+          email: email || `${mobileNumber}@aureliatravel.com`,
         });
       }
       setIsSuccess(false);

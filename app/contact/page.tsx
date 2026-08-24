@@ -10,28 +10,28 @@ export default function ContactPage() {
 
   const offices = [
     {
-      city: 'London',
-      address: '14 Berkeley Square, Mayfair, London W1J 6BQ',
-      phone: '+44 20 7946 0912',
-      email: 'london@aureliatravel.demo',
+      city: 'Mumbai',
+      address: 'Maker Chambers VI, Nariman Point, Mumbai 400021, India',
+      phone: '+91 22 6982 9900',
+      email: 'mumbai@aureliatravel.com',
     },
     {
-      city: 'Geneva',
-      address: 'Rue du Rhône 42, 1204 Genève, Switzerland',
+      city: 'London',
+      address: '14 Berkeley Square, Mayfair, London W1J 6BQ, UK',
+      phone: '+44 20 7946 0912',
+      email: 'london@aureliatravel.com',
+    },
+    {
+      city: 'Zurich & Geneva',
+      address: 'Bahnhofstrasse 28, 8001 Zürich / Rue du Rhône 42, Geneva',
       phone: '+41 22 518 8900',
-      email: 'geneva@aureliatravel.demo',
+      email: 'switzerland@aureliatravel.com',
     },
     {
       city: 'New York',
-      address: '767 Fifth Avenue, New York, NY 10153',
+      address: '767 Fifth Avenue, Manhattan, New York, NY 10153, USA',
       phone: '+1 212 555 0198',
-      email: 'newyork@aureliatravel.demo',
-    },
-    {
-      city: 'Tokyo',
-      address: 'Ginza Six, 6-10-1 Ginza, Chuo City, Tokyo 104-0061',
-      phone: '+81 3 5555 0142',
-      email: 'tokyo@aureliatravel.demo',
+      email: 'newyork@aureliatravel.com',
     },
   ];
 
@@ -129,10 +129,10 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <select className="w-full bg-[#0c0e14] border border-[#c5a880]/30 rounded-2xl px-4 py-3.5 text-xs text-[#f4f2ed] outline-none cursor-pointer">
+                    <option value="Mumbai Desk">Mumbai Nariman Point Desk</option>
                     <option value="London Desk">London Mayfair Desk</option>
-                    <option value="Geneva Desk">Geneva Desk</option>
+                    <option value="Switzerland Desk">Zurich & Geneva Desk</option>
                     <option value="New York Desk">New York Fifth Avenue Desk</option>
-                    <option value="Tokyo Desk">Tokyo Ginza Desk</option>
                     <option value="Secure Video Consultation">Secure Video Link (Global)</option>
                   </select>
 

@@ -4,8 +4,8 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import AureliaNavbar from '@/components/AureliaNavbar';
+import AureliaFooter from '@/components/AureliaFooter';
 import {
   Car,
   MapPin,
@@ -27,8 +27,8 @@ function CabsContent() {
   const time = searchParams.get('time') || '06:00 AM';
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
-      <Navbar />
+    <div className="flex flex-col min-h-screen bg-[#0c0e14] text-[#f4f2ed]">
+      <AureliaNavbar />
 
       <main className="flex-1 pt-24 pb-16">
         {/* Header Bar */}
@@ -131,7 +131,7 @@ function CabsContent() {
         </div>
       </main>
 
-      <Footer />
+      <AureliaFooter />
     </div>
   );
 }

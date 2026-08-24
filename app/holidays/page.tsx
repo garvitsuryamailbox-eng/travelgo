@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import AureliaNavbar from '@/components/AureliaNavbar';
+import AureliaFooter from '@/components/AureliaFooter';
 import {
   Package,
   Clock,
@@ -30,8 +30,8 @@ export default function HolidaysPage() {
       : holidayPackagesData.filter((p) => p.theme.includes(selectedTheme) || p.theme === selectedTheme);
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
-      <Navbar />
+    <div className="flex flex-col min-h-screen bg-[#0c0e14] text-[#f4f2ed]">
+      <AureliaNavbar />
 
       <main className="flex-1 pt-24 pb-16">
         {/* Header Banner */}
@@ -187,7 +187,7 @@ export default function HolidaysPage() {
         </div>
       </main>
 
-      <Footer />
+      <AureliaFooter />
     </div>
   );
 }
