@@ -5,6 +5,7 @@ import PopularDestinations from '@/components/PopularDestinations';
 import FeaturedHotels from '@/components/FeaturedHotels';
 import TravelPackages from '@/components/TravelPackages';
 import ExperiencesSection from '@/components/ExperiencesSection';
+import ArticleHubSection from '@/components/ArticleHubSection';
 import WhyChooseUs from '@/components/WhyChooseUs';
 import RewardsSection from '@/components/RewardsSection';
 import CustomerReviews from '@/components/CustomerReviews';
@@ -38,19 +39,22 @@ export default function Home() {
         {/* 6. Experiences Worth Travelling For */}
         <ExperiencesSection />
 
-        {/* 7. Why TravelGo - 4 Core Value Pillars */}
+        {/* 7. Plan Your Trip: Luxury Article Hub (visitabudhabi style) */}
+        <ArticleHubSection />
+
+        {/* 8. Why TravelGo - 4 Core Value Pillars */}
         <WhyChooseUs />
 
-        {/* 8. TravelGo Rewards & Loyalty Club */}
+        {/* 9. TravelGo Rewards & Loyalty Club */}
         <RewardsSection />
 
-        {/* 9. Verified Customer Reviews & Ratings */}
+        {/* 10. Verified Customer Reviews & Ratings */}
         <CustomerReviews />
 
-        {/* 10. Frequently Asked Questions */}
+        {/* 11. Frequently Asked Questions */}
         <FAQSection />
 
-        {/* 11. Instant Discount Newsletter */}
+        {/* 12. Instant Discount Newsletter */}
         <Newsletter />
       </main>
 

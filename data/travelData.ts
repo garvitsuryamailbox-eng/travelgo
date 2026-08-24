@@ -1466,3 +1466,94 @@ export const reviewsData: Review[] = [
   },
 ];
 
+export interface ArticleItem {
+  id: string;
+  title: string;
+  excerpt: string;
+  category: 'Itineraries' | 'Luxury Stays' | 'Culture & Heritage' | 'Adventure' | 'Food & Nightlife';
+  readTime: string;
+  author: string;
+  date: string;
+  image: string;
+  tag: string;
+  featured?: boolean;
+  relatedDestination: string;
+}
+
+export const articlesData: ArticleItem[] = [
+  {
+    id: 'art-1',
+    title: 'The Ultimate 48-Hour Abu Dhabi & Dubai Luxury Guide: From Grand Mosques to Desert Dunes',
+    excerpt: 'Explore the architectural masterpiece of Sheikh Zayed Grand Mosque, Louvre Abu Dhabi, desert glamping pavilions, and Michelin-starred rooftop dining.',
+    category: 'Itineraries',
+    readTime: '6 min read',
+    author: 'TravelGo Curators',
+    date: 'February 2026',
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=80',
+    tag: 'Trending Guide',
+    featured: true,
+    relatedDestination: 'Dubai / Abu Dhabi',
+  },
+  {
+    id: 'art-2',
+    title: 'Secret North Goa: Heritage Portuguese Mansions, Quiet Coves & Sun-Drenched Cafés',
+    excerpt: 'Escape the tourist crowds with our curated map to hidden Fontainhas villas, clandestine beach shacks, and artisanal feni tasting rooms.',
+    category: 'Culture & Heritage',
+    readTime: '4 min read',
+    author: 'Aanya Sen',
+    date: 'January 2026',
+    image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
+    tag: 'Hidden Gems',
+    relatedDestination: 'Goa',
+  },
+  {
+    id: 'art-3',
+    title: 'Kashmir in Full Bloom: The Insider Guide to Gulmarg Gondola & Houseboat Serenity',
+    excerpt: 'Everything you need to know about booking Phase-2 Gondola cable tickets, authentic Dal Lake Shikara rides, and saffron valley excursions.',
+    category: 'Adventure',
+    readTime: '5 min read',
+    author: 'Karan Malhotra',
+    date: 'January 2026',
+    image: 'https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=1200&q=80',
+    tag: 'Mountain Escape',
+    relatedDestination: 'Kashmir',
+  },
+  {
+    id: 'art-4',
+    title: 'Royal Rajasthan: Living Like Royalty in 300-Year-Old Palace Hotels of Udaipur & Jaipur',
+    excerpt: 'Discover marble courtyards, private sunset boat cruises on Lake Pichola, and royal dining banquets beneath the stars.',
+    category: 'Luxury Stays',
+    readTime: '7 min read',
+    author: 'Devika Singhania',
+    date: 'February 2026',
+    image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
+    tag: 'Royal Heritage',
+    relatedDestination: 'Rajasthan',
+  },
+  {
+    id: 'art-5',
+    title: 'Bali Beyond the Beaches: Sacred Water Temples, Jungle Infinity Pools & Sunset Cliffs',
+    excerpt: 'A deep dive into Ubud’s lush rainforest retreats, holistic sound-healing sanctuaries, and Uluwatu cliffside beach clubs.',
+    category: 'Luxury Stays',
+    readTime: '5 min read',
+    author: 'Liam Vance',
+    date: 'January 2026',
+    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80',
+    tag: 'Island Life',
+    relatedDestination: 'Bali',
+  },
+  {
+    id: 'art-6',
+    title: 'Gastronomy Trail: 10 Must-Try Culinary Journeys Across Old Delhi, Lucknow & Mumbai',
+    excerpt: 'From fragrant Awadhi dum biryani and buttery kebabs to sea-facing coastal seafood thalis in Colaba.',
+    category: 'Food & Nightlife',
+    readTime: '4 min read',
+    author: 'Rohit Bajaj',
+    date: 'February 2026',
+    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=1200&q=80',
+    tag: 'Foodie Trail',
+    relatedDestination: 'India Culinary',
+  },
+];
+
+
