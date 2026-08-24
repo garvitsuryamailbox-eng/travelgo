@@ -1,0 +1,43 @@
+{
+  "name": "travel-booking",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "lucide-react": "^1.34.0",
+    "next": "16.3.2",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "bookings": [
+    {
+      "id": "BK-872874",
+      "type": "flight",
+      "title": "IndiGo Flight DEL to GOI",
+      "customer": {
+        "name": "Test User",
+        "email": "test@example.com",
+        "phone": "+91 9999999999"
+      },
+      "amount": 4999,
+      "status": "CONFIRMED",
+      "bookingDate": "2026-08-24T15:47:14.671Z",
+      "paymentMethod": "UPI / Card (Online)"
+    }
+  ]
+}

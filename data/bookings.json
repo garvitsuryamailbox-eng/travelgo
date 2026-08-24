@@ -1,0 +1,30 @@
+[
+  {
+    "id": "BK-872874",
+    "type": "flight",
+    "title": "IndiGo Flight DEL to GOI",
+    "customer": {
+      "name": "Test User",
+      "email": "test@example.com",
+      "phone": "+91 9999999999"
+    },
+    "amount": 4999,
+    "status": "CONFIRMED",
+    "bookingDate": "2026-08-24T15:47:14.671Z",
+    "paymentMethod": "UPI / Card (Online)"
+  },
+  {
+    "id": "BK-892145",
+    "type": "hotel",
+    "title": "Taj Exotica Resort & Spa, Goa",
+    "customer": {
+      "name": "Aditya Verma",
+      "email": "aditya.verma@example.com",
+      "phone": "+91 9876543210"
+    },
+    "amount": 14997,
+    "status": "CONFIRMED",
+    "bookingDate": "2026-08-24T18:30:00.000Z",
+    "paymentMethod": "UPI (Google Pay)"
+  }
+]
