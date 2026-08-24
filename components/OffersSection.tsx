@@ -15,13 +15,17 @@ export default function OffersSection() {
   };
 
   return (
-    <section id="offers" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="offers" className="py-20 bg-gradient-to-b from-slate-50 via-sky-50/40 to-slate-50 relative overflow-hidden">
+      {/* Decorative ambient background blur */}
+      <div className="absolute top-10 right-1/4 w-80 h-80 bg-sky-200/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-10 left-1/4 w-80 h-80 bg-teal-200/30 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold uppercase tracking-wider mb-2 border border-amber-100">
-              <Percent className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold uppercase tracking-wider mb-2 border border-amber-200 shadow-sm">
+              <Percent className="w-3.5 h-3.5 text-amber-600" />
               <span>Exclusive Promo Discounts</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
@@ -38,7 +42,7 @@ export default function OffersSection() {
           {offersData.slice(0, 3).map((off) => (
             <div
               key={off.id}
-              className="group relative bg-gradient-to-br from-slate-50 to-sky-50/50 rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
+              className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:border-sky-300 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
             >
               <div>
                 {/* Bank / Category Header */}
@@ -47,7 +51,7 @@ export default function OffersSection() {
                     {off.category}
                   </span>
                   {off.bankLogoText && (
-                    <span className="text-xs font-extrabold text-slate-700 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                    <span className="text-xs font-extrabold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
                       {off.bankLogoText}
                     </span>
                   )}
@@ -62,8 +66,8 @@ export default function OffersSection() {
               </div>
 
               {/* Coupon Box */}
-              <div className="pt-6 mt-6 border-t border-slate-200/80">
-                <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white border border-dashed border-sky-300 shadow-inner">
+              <div className="pt-6 mt-6 border-t border-slate-100">
+                <div className="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 border border-dashed border-sky-300 shadow-inner">
                   <div>
                     <span className="text-[10px] text-slate-400 uppercase font-bold block">Coupon Code</span>
                     <span className="font-mono font-black text-sm text-sky-700">{off.couponCode}</span>
