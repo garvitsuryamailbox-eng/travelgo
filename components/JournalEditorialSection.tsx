@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BookOpen, Clock, ArrowRight, Sparkles } from 'lucide-react';
+import { BookOpen, Clock, ArrowRight } from 'lucide-react';
 import { journalArticlesData } from '@/data/aureliaData';
 
 export default function JournalEditorialSection() {

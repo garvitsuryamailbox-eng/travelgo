@@ -46,8 +46,7 @@ export default function InstantCheckoutModal({
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'netbanking'>('upi');
   const [step, setStep] = useState<'form' | 'success'>('form');
   const [copied, setCopied] = useState(false);
-  const [pnrNumber, setPnrNumber] = useState('TG-' + Math.floor(100000 + Math.random() * 900000));
-
+  const [pnrNumber] = useState(() => 'TG-' + Math.floor(100000 + Math.random() * 900000));
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
@@ -159,7 +158,7 @@ export default function InstantCheckoutModal({
                     <button
                       key={pm.id}
                       type="button"
-                      onClick={() => setPaymentMethod(pm.id as any)}
+                      onClick={() => setPaymentMethod(pm.id as 'upi' | 'card' | 'netbanking')}
                       className={`p-3 rounded-2xl border text-xs font-bold flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
                         active
                           ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400'

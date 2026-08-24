@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, Clock, Compass } from 'lucide-react';
+import { ArrowRight, Sparkles, Clock } from 'lucide-react';
 import { signatureJourneysData } from '@/data/aureliaData';
 
 export default function SignatureJourneysSection() {

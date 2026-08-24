@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Sparkles, ArrowRight, MapPin } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 import { destinationGuidesData } from '@/data/aureliaData';
 
 export default function TripInspirationSection() {
