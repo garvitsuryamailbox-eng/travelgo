@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Menu, X, ArrowRight, Sparkles, PhoneCall } from 'lucide-react';
+import { Compass, Menu, X, ArrowRight, Sparkles, Globe, ChevronDown } from 'lucide-react';
+import { useCurrency, SUPPORTED_CURRENCIES, CurrencyCode } from '@/context/CurrencyContext';
 
 export default function AureliaNavbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
+  const { currency, setCurrencyCode } = useCurrency();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +20,17 @@ export default function AureliaNavbar() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setCurrencyDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const navLinks = [
@@ -57,7 +72,7 @@ export default function AureliaNavbar() {
             </div>
           </Link>
 
-          {/* 2. Center & Right Unified Navigation with Generous Spacing & Divider */}
+          {/* 2. Center & Right Unified Navigation with Global Currency Switcher */}
           <div className="hidden xl:flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] font-medium">
             {/* Primary Category Links */}
             <nav className="flex items-center gap-5 text-[#eae6df]/80">
@@ -80,7 +95,7 @@ export default function AureliaNavbar() {
               })}
             </nav>
 
-            {/* Subtle Luxury Divider to prevent links from sticking together */}
+            {/* Subtle Luxury Divider */}
             <span className="h-4 w-[1px] bg-[#c5a880]/30 shrink-0 mx-1" aria-hidden="true" />
 
             {/* Secondary Editorial & Concierge Links */}
@@ -104,6 +119,49 @@ export default function AureliaNavbar() {
               })}
             </div>
 
+            {/* Global Multi-Currency Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#c5a880]/30 hover:border-[#c5a880] bg-[#12151e]/80 text-[#eae6df] text-[10px] tracking-wider transition-all cursor-pointer"
+                aria-label="Select Currency"
+              >
+                <span>{currency.flag}</span>
+                <span className="font-semibold text-[#c5a880]">{currency.code}</span>
+                <ChevronDown className={`w-3 h-3 text-[#c5a880] transition-transform ${currencyDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {currencyDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-[#12151e] border border-[#c5a880]/30 shadow-2xl p-2 z-50 animate-in zoom-in-95 space-y-1">
+                  <div className="text-[9px] uppercase tracking-widest text-[#c5a880] px-3 py-1 font-bold border-b border-[#c5a880]/15">
+                    Select Currency
+                  </div>
+                  {Object.values(SUPPORTED_CURRENCIES).map((c) => (
+                    <button
+                      key={c.code}
+                      type="button"
+                      onClick={() => {
+                        setCurrencyCode(c.code as CurrencyCode);
+                        setCurrencyDropdownOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-left text-xs transition-colors cursor-pointer ${
+                        currency.code === c.code
+                          ? 'bg-[#c5a880] text-[#0c0e14] font-bold'
+                          : 'text-[#eae6df]/80 hover:bg-[#0c0e14] hover:text-[#c5a880]'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{c.flag}</span>
+                        <span>{c.code}</span>
+                      </span>
+                      <span className="text-[10px] opacity-75">{c.symbol}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* CTA Button */}
             <Link
               href="/#planner"
@@ -115,14 +173,30 @@ export default function AureliaNavbar() {
           </div>
 
           {/* 3. Mobile / Tablet Hamburger Toggle */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="xl:hidden p-2 rounded-full border border-[#c5a880]/30 text-[#f4f2ed] hover:border-[#c5a880] transition-colors"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6 text-[#c5a880]" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="flex items-center gap-3 xl:hidden">
+            {/* Mobile Currency Pill */}
+            <button
+              type="button"
+              onClick={() => {
+                const codes = Object.keys(SUPPORTED_CURRENCIES) as CurrencyCode[];
+                const nextIdx = (codes.indexOf(currency.code) + 1) % codes.length;
+                setCurrencyCode(codes[nextIdx]);
+              }}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-[#c5a880]/30 text-[10px] text-[#c5a880] font-semibold"
+            >
+              <span>{currency.flag}</span>
+              <span>{currency.code}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-full border border-[#c5a880]/30 text-[#f4f2ed] hover:border-[#c5a880] transition-colors"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6 text-[#c5a880]" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -130,8 +204,26 @@ export default function AureliaNavbar() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-[#0c0e14]/98 backdrop-blur-2xl flex flex-col justify-between p-8 pt-28 animate-in fade-in duration-300 xl:hidden">
           <div className="space-y-6">
-            <div className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#c5a880] border-b border-[#c5a880]/20 pb-3">
-              Explore Aurelia
+            <div className="flex items-center justify-between border-b border-[#c5a880]/20 pb-3">
+              <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#c5a880]">
+                Explore Aurelia
+              </span>
+
+              {/* Currency selector inside mobile menu */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-[#eae6df]/60 uppercase">Currency:</span>
+                <select
+                  value={currency.code}
+                  onChange={(e) => setCurrencyCode(e.target.value as CurrencyCode)}
+                  className="bg-[#12151e] border border-[#c5a880]/30 rounded-lg px-2 py-1 text-xs text-[#c5a880] outline-none"
+                >
+                  {Object.values(SUPPORTED_CURRENCIES).map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.flag} {c.code} ({c.symbol})
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <nav className="flex flex-col space-y-3.5 font-serif text-2xl tracking-widest text-[#f4f2ed]">

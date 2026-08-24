@@ -13,14 +13,18 @@ import {
   ArrowRight,
   Download,
   Copy,
-  Check
+  Check,
+  Globe,
+  Wallet,
+  Landmark
 } from 'lucide-react';
+import { useCurrency } from '@/context/CurrencyContext';
 
 interface CheckoutItem {
   title: string;
   category: string;
-  originalPrice: number;
-  discountedPrice: number;
+  originalPrice: number; // in USD base
+  discountedPrice: number; // in USD base
   dates: string;
   location: string;
 }
@@ -35,18 +39,23 @@ export default function InstantCheckoutModal({
   isOpen,
   onClose,
   item = {
-    title: 'Taj Exotica Resort & Spa · Luxury Sea View Villa',
-    category: 'Stays & Resorts',
-    originalPrice: 9999,
-    discountedPrice: 4999,
-    dates: '28 Oct – 31 Oct (3 Nights)',
-    location: 'Benaulim Beach, South Goa',
+    title: 'The Azure Palace · Penthouse Cliffside Suite',
+    category: 'Stays & Sanctuaries',
+    originalPrice: 4200,
+    discountedPrice: 3800,
+    dates: '15 Sep – 20 Sep (5 Nights)',
+    location: 'Amalfi Coast, Italy',
   },
 }: InstantCheckoutModalProps) {
-  const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'netbanking'>('upi');
+  const { formatPrice, currency } = useCurrency();
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'wallet' | 'wire' | 'upi'>('card');
   const [step, setStep] = useState<'form' | 'success'>('form');
   const [copied, setCopied] = useState(false);
-  const [pnrNumber] = useState(() => 'TG-' + Math.floor(100000 + Math.random() * 900000));
+  const [pnrNumber] = useState(() => 'AUR-' + Math.floor(100000 + Math.random() * 900000));
+  const [countryCode, setCountryCode] = useState('+1');
+  const [guestName, setGuestName] = useState('Alexander Vance');
+  const [guestEmail, setGuestEmail] = useState('a.vance@privateclient.com');
+  const [guestPhone, setGuestPhone] = useState('2125550198');
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
@@ -63,16 +72,24 @@ export default function InstantCheckoutModal({
           type: item.category,
           title: item.title,
           amount: item.discountedPrice,
-          paymentMethod: paymentMethod === 'upi' ? 'UPI / QR' : paymentMethod === 'card' ? 'Credit Card' : 'Net Banking',
+          currency: currency.code,
+          paymentMethod:
+            paymentMethod === 'card'
+              ? 'International Card (Amex/Visa/Mastercard)'
+              : paymentMethod === 'wallet'
+              ? 'Apple Pay / Google Pay'
+              : paymentMethod === 'wire'
+              ? 'Private Bank SWIFT Wire'
+              : 'UPI / NetBanking',
           customer: {
-            name: 'Demo Guest',
-            email: 'guest@travelgo-demo.com',
-            phone: '+91 9876543210'
-          }
+            name: guestName,
+            email: guestEmail,
+            phone: `${countryCode} ${guestPhone}`,
+          },
         }),
       });
-    } catch (err) {
-      console.warn('Booking API save:', err);
+    } catch {
+      // Local fallback
     } finally {
       setLoading(false);
       setStep('success');
@@ -85,72 +102,126 @@ export default function InstantCheckoutModal({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleClose = () => {
-    setStep('form');
-    onClose();
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-[#131827] border border-slate-800 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl text-white">
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-800 bg-[#0e1320]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
-              ⚡
-            </div>
-            <div>
-              <h3 className="font-bold text-sm text-white">Instant Travel Booking Demo</h3>
-              <span className="text-[11px] text-slate-400">Simulated Safe Gateway</span>
-            </div>
-          </div>
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+      <div className="relative w-full max-w-lg bg-[#12151e] rounded-3xl shadow-2xl border border-[#c5a880]/30 overflow-hidden text-[#f4f2ed] animate-in zoom-in-95">
+        {/* Header Ribbon */}
+        <div className="bg-gradient-to-r from-[#0c0e14] via-[#161922] to-[#0c0e14] p-6 text-white text-center relative border-b border-[#c5a880]/20">
           <button
-            onClick={handleClose}
-            className="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
+            type="button"
+            onClick={onClose}
+            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
+
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#c5a880]/20 text-[10px] text-[#c5a880] font-bold uppercase tracking-widest mb-2 border border-[#c5a880]/30">
+            <Globe className="w-3 h-3" />
+            <span>Global Client Reservation</span>
+          </div>
+
+          <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#faf9f6]">
+            {step === 'form' ? 'Reserve Your Sanctuary' : 'Reservation Confirmed'}
+          </h3>
+          <p className="text-xs text-[#eae6df]/70 font-light mt-1">
+            {step === 'form'
+              ? `Prices displayed in ${currency.name} (${currency.code})`
+              : 'Your dedicated concierge will coordinate your arrival.'}
+          </p>
         </div>
 
         {step === 'form' ? (
-          <form onSubmit={handlePay} className="p-6 space-y-5">
-            {/* Booking Summary Box */}
-            <div className="p-4 rounded-2xl bg-[#0b0f19] border border-slate-800/80 space-y-2.5">
-              <div className="flex justify-between items-start">
+          <form onSubmit={handlePay} className="p-6 sm:p-8 space-y-6">
+            {/* Item Details Summary Card */}
+            <div className="p-4 rounded-2xl bg-[#0c0e14] border border-[#c5a880]/20 space-y-2">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400">
+                  <span className="text-[9px] uppercase tracking-widest text-[#c5a880] font-semibold">
                     {item.category}
                   </span>
-                  <h4 className="font-bold text-sm text-white">{item.title}</h4>
-                  <p className="text-xs text-slate-400">{item.location} · {item.dates}</p>
+                  <h4 className="font-serif text-lg text-[#faf9f6] leading-tight">
+                    {item.title}
+                  </h4>
+                  <p className="text-xs text-[#eae6df]/60 font-light">{item.location} · {item.dates}</p>
                 </div>
-                <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-bold text-xs">
-                  50% OFF
-                </span>
-              </div>
-
-              <div className="pt-2 border-t border-slate-800 flex justify-between items-center text-xs">
-                <span className="text-slate-400">Total Payable Amount:</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-500 line-through">₹{item.originalPrice.toLocaleString('en-IN')}</span>
-                  <span className="font-black text-lg text-emerald-400">
-                    ₹{item.discountedPrice.toLocaleString('en-IN')}
+                <div className="text-right shrink-0">
+                  <span className="text-xs text-[#eae6df]/40 line-through block">
+                    {formatPrice(item.originalPrice)}
+                  </span>
+                  <span className="font-serif text-xl font-bold text-[#c5a880]">
+                    {formatPrice(item.discountedPrice)}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Payment Method Selector */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                Select Payment Mode (Simulated)
+            {/* Guest Information */}
+            <div className="space-y-3">
+              <label className="text-[10px] uppercase tracking-widest text-[#c5a880] font-bold block">
+                Primary Guest & Contact
               </label>
-              <div className="grid grid-cols-3 gap-2">
+
+              <input
+                type="text"
+                required
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+                placeholder="Full Legal Name"
+                className="w-full bg-[#0c0e14] border border-[#c5a880]/20 focus:border-[#c5a880] rounded-xl px-3.5 py-2.5 text-xs text-[#f4f2ed] outline-none"
+              />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input
+                  type="email"
+                  required
+                  value={guestEmail}
+                  onChange={(e) => setGuestEmail(e.target.value)}
+                  placeholder="Private Email Address"
+                  className="w-full bg-[#0c0e14] border border-[#c5a880]/20 focus:border-[#c5a880] rounded-xl px-3.5 py-2.5 text-xs text-[#f4f2ed] outline-none"
+                />
+
+                <div className="flex gap-2">
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="bg-[#0c0e14] border border-[#c5a880]/20 focus:border-[#c5a880] rounded-xl px-2.5 py-2.5 text-xs text-[#c5a880] outline-none cursor-pointer shrink-0"
+                  >
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+41">🇨🇭 +41</option>
+                    <option value="+33">🇫🇷 +33</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+81">🇯🇵 +81</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+61">🇦🇺 +61</option>
+                  </select>
+
+                  <input
+                    type="tel"
+                    required
+                    value={guestPhone}
+                    onChange={(e) => setGuestPhone(e.target.value)}
+                    placeholder="Phone Number"
+                    className="w-full bg-[#0c0e14] border border-[#c5a880]/20 focus:border-[#c5a880] rounded-xl px-3.5 py-2.5 text-xs text-[#f4f2ed] outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Global Payment Methods Selection */}
+            <div className="space-y-3">
+              <label className="text-[10px] uppercase tracking-widest text-[#c5a880] font-bold block">
+                Accepted Global Settlement Methods
+              </label>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
-                  { id: 'upi', label: 'UPI / QR', icon: QrCode },
-                  { id: 'card', label: 'Cards', icon: CreditCard },
-                  { id: 'netbanking', label: 'NetBanking', icon: Building2 },
+                  { id: 'card', label: 'Credit Card', icon: CreditCard, sub: 'Amex/Visa/MC' },
+                  { id: 'wallet', label: 'Digital Wallet', icon: Wallet, sub: 'Apple/Google' },
+                  { id: 'wire', label: 'Bank Wire', icon: Landmark, sub: 'SWIFT Transfer' },
+                  { id: 'upi', label: 'UPI / NetBanking', icon: QrCode, sub: 'India Direct' },
                 ].map((pm) => {
                   const Icon = pm.icon;
                   const active = paymentMethod === pm.id;
@@ -158,138 +229,106 @@ export default function InstantCheckoutModal({
                     <button
                       key={pm.id}
                       type="button"
-                      onClick={() => setPaymentMethod(pm.id as 'upi' | 'card' | 'netbanking')}
-                      className={`p-3 rounded-2xl border text-xs font-bold flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                      onClick={() => setPaymentMethod(pm.id as 'card' | 'wallet' | 'wire' | 'upi')}
+                      className={`p-3 rounded-2xl border text-left flex flex-col justify-between gap-1 transition-all cursor-pointer ${
                         active
-                          ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400'
-                          : 'bg-[#0b0f19] border-slate-800 text-slate-400 hover:text-white'
+                          ? 'bg-[#c5a880] text-[#0c0e14] border-[#c5a880] font-semibold shadow-lg shadow-[#c5a880]/20'
+                          : 'bg-[#0c0e14] border-white/5 text-[#eae6df]/70 hover:border-[#c5a880]/40'
                       }`}
                     >
-                      <Icon className="w-4 h-4" />
-                      <span>{pm.label}</span>
+                      <Icon className={`w-4 h-4 ${active ? 'text-[#0c0e14]' : 'text-[#c5a880]'}`} />
+                      <div>
+                        <div className="text-[11px] font-bold leading-tight">{pm.label}</div>
+                        <div className="text-[9px] opacity-75">{pm.sub}</div>
+                      </div>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Mock Fields based on method */}
-            {paymentMethod === 'upi' ? (
-              <div className="p-4 rounded-2xl bg-[#0b0f19] border border-slate-800 text-center space-y-2">
-                <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-white text-slate-950 font-mono text-xs font-bold">
-                  [ SIMULATED UPI QR CODE ]
-                </div>
-                <p className="text-xs text-slate-400">
-                  Scan with Google Pay, PhonePe, Paytm or enter test VPA: <strong className="text-white">user@okhdfcbank</strong>
-                </p>
+            {/* Total Settlement & Submit */}
+            <div className="pt-4 border-t border-[#c5a880]/15 space-y-4">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#eae6df]/60 font-light">Total Reservation Rate ({currency.code}):</span>
+                <span className="font-serif text-2xl font-bold text-[#faf9f6]">
+                  {formatPrice(item.discountedPrice)}
+                </span>
               </div>
-            ) : paymentMethod === 'card' ? (
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">Card Number</label>
-                  <input
-                    type="text"
-                    defaultValue="4111 2222 3333 4444"
-                    readOnly
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0f19] border border-slate-800 text-white text-xs font-mono"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-1">Expiry</label>
-                    <input
-                      type="text"
-                      defaultValue="12/28"
-                      readOnly
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0f19] border border-slate-800 text-white text-xs font-mono"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-1">CVV</label>
-                    <input
-                      type="password"
-                      defaultValue="888"
-                      readOnly
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0f19] border border-slate-800 text-white text-xs font-mono"
-                    />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="p-3.5 rounded-2xl bg-[#0b0f19] border border-slate-800 text-xs text-slate-300">
-                Selected Bank: <strong className="text-emerald-400">HDFC Bank (Direct Gateway Demo)</strong>
-              </div>
-            )}
 
-            {/* Security Guarantee Badge */}
-            <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>256-Bit SSL Encrypted Instant Demo Transaction</span>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 rounded-full bg-[#c5a880] hover:bg-[#b89768] text-[#0c0e14] font-semibold text-xs tracking-[0.25em] uppercase transition-all duration-300 shadow-xl shadow-[#c5a880]/20 hover:scale-[1.02] active:scale-95 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {loading ? (
+                  <span>Securing Reservation...</span>
+                ) : (
+                  <>
+                    <span>Confirm & Pay {formatPrice(item.discountedPrice)}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
+              </button>
+
+              <div className="flex items-center justify-center gap-2 text-[10px] text-[#eae6df]/50 font-light">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#c5a880]" />
+                <span>256-Bit Encrypted Global Payment Gateway · 100% Discretion</span>
+              </div>
             </div>
-
-            {/* Pay Button */}
-            <button
-              type="submit"
-              className="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm transition-all shadow-lg shadow-emerald-500/20 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
-            >
-              <span>⚡ Complete Demo Booking (₹{item.discountedPrice.toLocaleString('en-IN')})</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
           </form>
         ) : (
-          /* Confirmation / E-Ticket Voucher */
-          <div className="p-6 text-center space-y-5 animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-3xl">
-              <CheckCircle2 className="w-10 h-10" />
+          /* Confirmation Success State */
+          <div className="p-8 text-center space-y-6 animate-in zoom-in-95">
+            <div className="w-16 h-16 rounded-full border border-[#c5a880] bg-[#c5a880]/10 text-[#c5a880] flex items-center justify-center mx-auto shadow-xl">
+              <CheckCircle2 className="w-8 h-8" />
             </div>
 
-            <div>
-              <h4 className="text-2xl font-black text-white">Booking Confirmed!</h4>
-              <p className="text-xs text-slate-400 mt-1">
-                Your instant e-ticket voucher has been confirmed and saved to your trips.
-              </p>
-            </div>
-
-            {/* PNR Box */}
-            <div className="p-4 rounded-2xl bg-[#0b0f19] border border-slate-800 space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-slate-400">Booking Reference / PNR:</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-mono font-black text-emerald-400">{pnrNumber}</span>
-                  <button
-                    onClick={handleCopy}
-                    className="p-1 text-slate-400 hover:text-white rounded"
-                    title="Copy PNR"
-                  >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-slate-800 text-left text-xs text-slate-300">
-                <div><strong>Item:</strong> {item.title}</div>
-                <div><strong>Amount Paid:</strong> ₹{item.discountedPrice.toLocaleString('en-IN')} (Demo)</div>
-                <div><strong>Status:</strong> <span className="text-emerald-400 font-bold">Confirmed & Guaranteed</span></div>
+            <div className="space-y-2">
+              <span className="text-[10px] uppercase tracking-widest text-[#c5a880] font-bold">
+                Booking Reference
+              </span>
+              <div className="flex items-center justify-center gap-2">
+                <span className="font-serif text-3xl text-[#faf9f6] tracking-wider font-bold">
+                  {pnrNumber}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="p-2 rounded-xl bg-[#0c0e14] border border-[#c5a880]/30 hover:border-[#c5a880] text-[#c5a880] transition-colors cursor-pointer"
+                  title="Copy Reference"
+                >
+                  {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer"
-              >
-                Close Window
-              </button>
-              <button
-                type="button"
-                onClick={() => alert(`Downloaded E-Ticket Voucher for ${pnrNumber}`)}
-                className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <Download className="w-4 h-4" />
-                <span>Save Voucher</span>
-              </button>
+            <div className="p-4 rounded-2xl bg-[#0c0e14] border border-[#c5a880]/20 text-xs text-[#eae6df]/80 font-light space-y-1.5 text-left">
+              <div className="flex justify-between">
+                <span>Sanctuary:</span>
+                <span className="font-medium text-[#faf9f6]">{item.title}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Guest:</span>
+                <span className="font-medium text-[#faf9f6]">{guestName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Settlement:</span>
+                <span className="font-medium text-[#c5a880]">{formatPrice(item.discountedPrice)} (Settled)</span>
+              </div>
             </div>
+
+            <p className="text-xs text-[#eae6df]/60 font-light leading-relaxed">
+              A private client itinerary packet and concierge welcome notes have been dispatched to <strong>{guestEmail}</strong>.
+            </p>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full py-3.5 rounded-full bg-[#c5a880] text-[#0c0e14] font-semibold text-xs uppercase tracking-widest transition-all hover:bg-[#b89768] cursor-pointer"
+            >
+              Done
+            </button>
           </div>
         )}
       </div>

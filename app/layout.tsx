@@ -32,6 +32,8 @@ export const metadata: Metadata = {
   ],
 };
 
+import { CurrencyProvider } from "@/context/CurrencyContext";
+
 export default function RootLayout({
   children,
 }: {
@@ -43,7 +45,9 @@ export default function RootLayout({
       className={`${serif.variable} ${sans.variable} scroll-smooth antialiased`}
     >
       <body className="min-h-screen flex flex-col font-sans bg-[#0c0e14] text-[#f4f2ed] selection:bg-[#c5a880] selection:text-[#0c0e14]">
-        {children}
+        <CurrencyProvider>
+          {children}
+        </CurrencyProvider>
       </body>
     </html>
   );
