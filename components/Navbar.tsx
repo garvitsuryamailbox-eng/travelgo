@@ -22,6 +22,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import AuthModal from './AuthModal';
+import AnimatedLogo from './AnimatedLogo';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -78,18 +79,8 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-sky-500/25 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-              <Compass className="w-6 h-6 animate-float" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-black text-2xl text-slate-900 tracking-tight leading-none group-hover:text-sky-600 transition-colors">
-                Travel<span className="text-sky-500">Go</span>
-              </span>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                Plan Better · Travel Further
-              </span>
-            </div>
+          <Link href="/" className="shrink-0">
+            <AnimatedLogo size="md" variant="light" />
           </Link>
 
           {/* Center Navigation Categories */}

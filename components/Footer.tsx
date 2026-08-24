@@ -18,6 +18,8 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
+import AnimatedLogo from './AnimatedLogo';
+
 export default function Footer() {
   return (
     <footer className="bg-[#0b1120] text-slate-400 pt-16 pb-12 border-t border-slate-800">
@@ -81,18 +83,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 py-12 border-b border-slate-800/80">
           {/* Brand & Demo Info */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 via-teal-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-sky-500/25">
-                <Compass className="w-6 h-6" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-black text-2xl tracking-tight text-white">
-                  Travel<span className="text-sky-400">Go</span>
-                </span>
-                <span className="text-[9px] font-bold tracking-widest uppercase text-slate-400">
-                  Plan Better · Travel Further
-                </span>
-              </div>
+            <Link href="/" className="block">
+              <AnimatedLogo size="md" variant="dark" />
             </Link>
 
             <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
