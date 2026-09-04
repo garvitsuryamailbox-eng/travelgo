@@ -138,7 +138,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#08090e] text-slate-100 selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#f4f7fa] text-slate-900 selection:bg-blue-600 selection:text-white">
       {/* Navigation Bar */}
       <Navbar
         activeTab={activeTab}
