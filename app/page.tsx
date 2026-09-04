@@ -5,10 +5,10 @@ import Navbar from "../components/Navbar";
 import AirportLivePulse from "../components/AirportLivePulse";
 import PassengerAssuranceBanner from "../components/PassengerAssuranceBanner";
 import HeroBookingWidget from "../components/HeroBookingWidget";
-import OffersBanner from "../components/OffersBanner";
 import SearchResults from "../components/SearchResults";
 import WikiDestinationExplorer from "../components/WikiDestinationExplorer";
 import TrendingDestinations from "../components/TrendingDestinations";
+import OffersBanner from "../components/OffersBanner";
 import TripConciergeModal from "../components/TripConciergeModal";
 import MyBookingsDrawer from "../components/MyBookingsDrawer";
 import BookingModal from "../components/BookingModal";
@@ -38,8 +38,7 @@ export default function Home() {
     returnDate: "2026-09-20",
     travelersCount: 1,
     cabinClass: "Economy",
-    specialFare: "Regular",
-    hotelCity: "Gurgaon (DLF Cyber City & Golf Course Rd)",
+    hotelCity: "Gurgaon (DLF Cyber City)",
     cabType: "Airport Transfer"
   });
 
@@ -58,7 +57,6 @@ export default function Home() {
       if (saved) {
         setBookings(JSON.parse(saved));
       } else {
-        // Sample starter booking with refund shield and terminal info
         const initial = [
           {
             id: "bk-sample-1",
@@ -134,13 +132,13 @@ export default function Home() {
       ...searchParams,
       type: service,
       hotelCity: cityName,
-      toCity: { code: "DEL", city: cityName, airport: "Indira Gandhi Intl Airport (T3)" }
+      toCity: { code: "DEL", city: cityName, airport: "Indira Gandhi Intl (Terminal 3)" }
     });
     window.scrollTo({ top: 120, behavior: "smooth" });
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#060810] text-slate-100 selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#08090e] text-slate-100 selection:bg-blue-600 selection:text-white">
       {/* Navigation Bar */}
       <Navbar
         activeTab={activeTab}
@@ -155,14 +153,14 @@ export default function Home() {
         onOpenConcierge={() => setConciergeModalOpen(true)}
       />
 
-      {/* Live Airport & Terminal Pulse (IGI Terminal 3 / DigiYatra Radar) */}
+      {/* Slim Live Airport Pulse */}
       <AirportLivePulse />
 
-      {/* Passenger Assurance Trust Pillars (Zero Hidden Fees, Instant 100% Refund, Cab Guarantee) */}
+      {/* Clean 4-Pillar Trust Strip */}
       <PassengerAssuranceBanner />
 
-      <main className="flex-1">
-        {/* MakeMyTrip Hero Booking Engine with Upfront Price Lock */}
+      <main className="flex-1 space-y-4">
+        {/* Clean Hero Search Bar */}
         <HeroBookingWidget
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -171,15 +169,7 @@ export default function Home() {
           onOpenConcierge={() => setConciergeModalOpen(true)}
         />
 
-        {/* Bank Deals & Coupon Promo Banners */}
-        <OffersBanner
-          onApplyPromoCode={(code) => {
-            setAppliedPromo(code);
-            alert(`Coupon "${code}" copied! It will be automatically applied at checkout.`);
-          }}
-        />
-
-        {/* Live Filterable Search Results with Delay Risk & Peak Traffic Indicators */}
+        {/* Clean Search Results */}
         <SearchResults
           searchParams={searchParams}
           onBookItem={handleBookItem}
@@ -187,16 +177,24 @@ export default function Home() {
           onOpenWiki={handleOpenWiki}
         />
 
-        {/* Wikipedia Destination Guide (Featuring Gurgaon Cyber City) */}
+        {/* Magazine-Style Destination Guide */}
         <WikiDestinationExplorer
           selectedDestId={selectedWikiDest}
           onQuickBook={handleQuickBookFromWiki}
         />
 
-        {/* Trending Destinations Carousel / Grid */}
+        {/* Featured Destinations */}
         <TrendingDestinations
           onSelectDest={(destId) => handleOpenWiki(destId)}
           onBookHotel={(cityName) => handleQuickBookFromWiki("hotels", cityName)}
+        />
+
+        {/* Clean Deals */}
+        <OffersBanner
+          onApplyPromoCode={(code) => {
+            setAppliedPromo(code);
+            alert(`Code "${code}" applied for checkout!`);
+          }}
         />
       </main>
 
@@ -209,7 +207,7 @@ export default function Home() {
         }}
       />
 
-      {/* Slide-over My Bookings Drawer with Instant Refund Simulator */}
+      {/* Slide-over My Bookings */}
       <MyBookingsDrawer
         isOpen={bookingsDrawerOpen}
         onClose={() => setBookingsDrawerOpen(false)}
@@ -218,7 +216,7 @@ export default function Home() {
         currency={currency}
       />
 
-      {/* Booking Checkout & E-Ticket Modal */}
+      {/* Clean Checkout Modal */}
       <BookingModal
         isOpen={checkoutModalOpen}
         onClose={() => setCheckoutModalOpen(false)}
@@ -229,7 +227,7 @@ export default function Home() {
         onBookingSuccess={handleBookingSuccess}
       />
 
-      {/* AI Travel Concierge Copilot Modal */}
+      {/* AI Travel Concierge */}
       <TripConciergeModal
         isOpen={conciergeModalOpen}
         onClose={() => setConciergeModalOpen(false)}
@@ -237,7 +235,7 @@ export default function Home() {
         onOpenWiki={handleOpenWiki}
       />
 
-      {/* Login / Sign Up Modal */}
+      {/* Login Modal */}
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}

@@ -14,10 +14,7 @@ import {
   Compass,
   Menu,
   X,
-  Sparkles,
-  Bot,
-  Activity,
-  ShieldCheck
+  Bot
 } from "lucide-react";
 
 interface NavbarProps {
@@ -49,11 +46,11 @@ export default function Navbar({
 
   const navTabs = [
     { id: "flights", label: "Flights", icon: Plane },
-    { id: "hotels", label: "Hotels & Stays", icon: Building2 },
+    { id: "hotels", label: "Hotels", icon: Building2 },
     { id: "packages", label: "Holidays", icon: Palmtree },
     { id: "cabs", label: "Airport Cabs", icon: Car },
     { id: "trains", label: "Trains", icon: Train },
-    { id: "wiki", label: "Wiki Travel Guide", icon: BookOpen, highlight: true }
+    { id: "wiki", label: "Gurgaon Guide", icon: BookOpen }
   ];
 
   const handleTabClick = (tabId: string) => {
@@ -66,78 +63,32 @@ export default function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 text-white">
-      {/* Top micro bar with Live Airport Status and Zero Fee Guarantee */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between text-xs border-b border-slate-800/40 text-slate-400">
-        <div className="flex items-center gap-4">
-          <span className="inline-flex items-center gap-1.5 text-emerald-400 font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            Zero-Hidden-Fee Guarantee &bull; 100% Instant Refund Shield
-          </span>
-          <span className="hidden md:inline text-slate-600">|</span>
-          <span className="hidden md:inline text-cyan-400 cursor-pointer hover:underline" onClick={() => onOpenWiki("gurgaon")}>
-            🏙️ Gurgaon (Gurugram) Encyclopedia &amp; Guide
-          </span>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {/* Currency Toggle */}
-          <div className="flex items-center bg-slate-900 border border-slate-700/60 rounded-full px-2 py-0.5 text-[11px]">
-            <Globe className="w-3 h-3 text-slate-400 mr-1" />
-            <button
-              onClick={() => setCurrency("INR")}
-              className={`px-1.5 py-0.5 rounded-full font-medium transition-colors ${
-                currency === "INR" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"
-              }`}
-            >
-              ₹ INR
-            </button>
-            <button
-              onClick={() => setCurrency("USD")}
-              className={`px-1.5 py-0.5 rounded-full font-medium transition-colors ${
-                currency === "USD" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"
-              }`}
-            >
-              $ USD
-            </button>
-          </div>
-
-          {/* 24/7 Helpline */}
-          <div className="hidden sm:flex items-center gap-1 text-slate-400">
-            <span>24/7 Priority Support:</span>
-            <span className="text-blue-400 font-semibold">1800-102-8747</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Navbar */}
+    <header className="sticky top-0 z-40 bg-[#08090e]/95 backdrop-blur-md border-b border-slate-800/60 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Brand Logo */}
-          <div className="flex items-center gap-3">
-            <div
-              onClick={() => {
-                setActiveTab("flights");
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className="flex items-center gap-2.5 cursor-pointer group"
-            >
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform">
-                <Compass className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <span className="text-xl font-black tracking-tight bg-gradient-to-r from-white via-blue-100 to-blue-400 bg-clip-text text-transparent">
-                  Travel<span className="text-blue-500">Go</span>
-                </span>
-                <span className="block text-[9px] uppercase font-bold tracking-widest text-emerald-400 -mt-0.5">
-                  PREMIUM TRAVEL &bull; WIKI RADAR
-                </span>
-              </div>
+          <div
+            onClick={() => {
+              setActiveTab("flights");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="flex items-center gap-3 cursor-pointer group select-none"
+          >
+            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-600/20 group-hover:scale-105 transition-transform">
+              <Compass className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-extrabold tracking-tight text-white leading-none">
+                Travel<span className="text-blue-500">Go</span>
+              </span>
+              <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-0.5">
+                Luxury Booking &amp; Wiki
+              </span>
             </div>
           </div>
 
-          {/* Desktop Service Tabs */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-900/80 p-1 rounded-2xl border border-slate-800/80">
+          {/* Desktop Clean Service Tabs */}
+          <nav className="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/60">
             {navTabs.map((tab) => {
               const Icon = tab.icon;
               const isSelected = activeTab === tab.id;
@@ -145,58 +96,71 @@ export default function Navbar({
                 <button
                   key={tab.id}
                   onClick={() => handleTabClick(tab.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
                     isSelected
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20"
-                      : tab.highlight
-                      ? "text-cyan-400 hover:text-cyan-300 hover:bg-slate-800/60"
-                      : "text-slate-300 hover:text-white hover:bg-slate-800/60"
+                      ? "bg-blue-600 text-white shadow-sm shadow-blue-500/20"
+                      : "text-slate-400 hover:text-white hover:bg-slate-800/50"
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isSelected ? "text-white" : tab.highlight ? "text-cyan-400" : "text-slate-400"}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-white" : "text-slate-400"}`} />
                   <span>{tab.label}</span>
-                  {tab.highlight && (
-                    <span className="px-1.5 py-0.2 bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[9px] rounded-full font-bold">
-                      GUIDE
-                    </span>
-                  )}
                 </button>
               );
             })}
           </nav>
 
-          {/* Right Action Buttons */}
-          <div className="flex items-center gap-2.5">
-            {/* AI Travel Concierge Trigger */}
+          {/* Right Action Icons */}
+          <div className="flex items-center gap-3">
+            {/* Currency Toggle */}
+            <div className="hidden sm:flex items-center bg-slate-900/80 border border-slate-800 rounded-xl p-1 text-[11px]">
+              <button
+                onClick={() => setCurrency("INR")}
+                className={`px-2 py-1 rounded-lg font-semibold transition-colors ${
+                  currency === "INR" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"
+                }`}
+              >
+                ₹ INR
+              </button>
+              <button
+                onClick={() => setCurrency("USD")}
+                className={`px-2 py-1 rounded-lg font-semibold transition-colors ${
+                  currency === "USD" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"
+                }`}
+              >
+                $ USD
+              </button>
+            </div>
+
+            {/* AI Travel Copilot Button */}
             <button
               onClick={onOpenConcierge}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-indigo-600/30 to-cyan-600/30 border border-cyan-500/40 text-xs font-bold text-cyan-300 hover:text-white hover:border-cyan-400 transition-all shadow-md shadow-cyan-500/10"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all"
             >
-              <Bot className="w-4 h-4 text-cyan-400 animate-bounce" />
-              <span className="hidden sm:inline">AI Concierge</span>
+              <Bot className="w-4 h-4 text-blue-400" />
+              <span className="hidden md:inline">AI Concierge</span>
             </button>
 
-            {/* My Bookings */}
+            {/* My Bookings / Trips */}
             <button
               onClick={onOpenBookings}
-              className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 hover:text-white hover:border-slate-600 hover:bg-slate-800 transition-all"
+              className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600/10 border border-blue-500/20 text-xs font-semibold text-blue-400 hover:bg-blue-600/20 transition-all"
             >
-              <ShoppingBag className="w-4 h-4 text-blue-400" />
+              <ShoppingBag className="w-4 h-4" />
               <span className="hidden sm:inline">My Trips</span>
               {bookingCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
+                <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
                   {bookingCount}
                 </span>
               )}
             </button>
 
-            {/* Auth / Profile button */}
+            {/* User Profile */}
             <button
               onClick={onOpenAuth}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border border-blue-500/30 text-xs font-semibold text-blue-300 hover:text-white hover:bg-blue-600/30 transition-all"
+              className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-colors"
+              title="Account"
             >
-              <User className="w-4 h-4 text-blue-400" />
-              <span className="hidden sm:inline">{user?.loggedIn ? user.name : "Login"}</span>
+              <User className="w-4 h-4" />
             </button>
 
             {/* Mobile menu toggle */}
@@ -210,9 +174,9 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile Dropdown Nav */}
+      {/* Mobile Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-800 bg-slate-950 px-4 py-4 space-y-2 animate-in slide-in-from-top-4">
+        <div className="lg:hidden border-t border-slate-800/60 bg-[#08090e] px-4 py-4 space-y-2 animate-in slide-in-from-top-3">
           <div className="grid grid-cols-2 gap-2">
             {navTabs.map((tab) => {
               const Icon = tab.icon;
@@ -232,19 +196,6 @@ export default function Navbar({
                 </button>
               );
             })}
-          </div>
-
-          <div className="pt-2">
-            <button
-              onClick={() => {
-                onOpenConcierge();
-                setMobileMenuOpen(false);
-              }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-xs font-bold shadow-lg"
-            >
-              <Bot className="w-4 h-4" />
-              Chat with AI Travel Concierge
-            </button>
           </div>
         </div>
       )}
