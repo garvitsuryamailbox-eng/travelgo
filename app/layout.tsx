@@ -1,27 +1,20 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const sans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-  variable: "--font-sans",
-});
-
 export const metadata: Metadata = {
-  title: "New Project",
-  description: "A brand new project built with Next.js and Tailwind CSS",
+  title: "TravelGo - MakeMyTrip Booking & Wikipedia Travel Guide",
+  description: "Book flights, hotels in Gurgaon Cyber City, airport cabs, and explore comprehensive Wikipedia destination guides with verified travel insights.",
+  keywords: "MakeMyTrip, travel booking, Gurgaon, Gurugram, Wikipedia travel guide, Cyber City, flights, luxury hotels, Delhi NCR, airport cabs"
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" className={`${sans.variable} scroll-smooth antialiased`}>
-      <body className="min-h-screen font-sans bg-[#090a0f] text-slate-100 selection:bg-blue-500 selection:text-white">
+    <html lang="en" className="dark">
+      <body className="min-h-screen bg-[#060810] text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
         {children}
       </body>
     </html>
