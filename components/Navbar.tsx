@@ -14,7 +14,9 @@ import {
   Compass,
   Menu,
   X,
-  Bot
+  Bot,
+  PhoneCall,
+  Sparkles
 } from "lucide-react";
 
 interface NavbarProps {
@@ -45,12 +47,12 @@ export default function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navTabs = [
-    { id: "flights", label: "Flights", icon: Plane },
-    { id: "hotels", label: "Hotels", icon: Building2 },
-    { id: "packages", label: "Holidays", icon: Palmtree },
-    { id: "cabs", label: "Airport Cabs", icon: Car },
-    { id: "trains", label: "Trains", icon: Train },
-    { id: "wiki", label: "Gurgaon Guide", icon: BookOpen }
+    { id: "flights", label: "Flights", icon: Plane, color: "text-blue-400" },
+    { id: "hotels", label: "Hotels", icon: Building2, color: "text-rose-400" },
+    { id: "packages", label: "Holidays", icon: Palmtree, color: "text-teal-400" },
+    { id: "cabs", label: "Airport Cabs", icon: Car, color: "text-amber-400" },
+    { id: "trains", label: "Trains", icon: Train, color: "text-emerald-400" },
+    { id: "wiki", label: "Gurgaon Wiki", icon: BookOpen, color: "text-cyan-400", highlight: true }
   ];
 
   const handleTabClick = (tabId: string) => {
@@ -63,7 +65,54 @@ export default function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#08090e]/95 backdrop-blur-md border-b border-slate-800/60 text-white">
+    <header className="sticky top-0 z-50 bg-[#051329] border-b border-blue-950 text-white shadow-xl">
+      {/* Top Micro Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between text-xs border-b border-blue-900/40 text-blue-200">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 font-semibold text-emerald-400">
+            <Sparkles className="w-3.5 h-3.5" />
+            100% Upfront Transparent Fares &bull; ₹0 Convenience Fee
+          </span>
+          <span className="hidden md:inline text-blue-800">|</span>
+          <span
+            onClick={() => onOpenWiki("gurgaon")}
+            className="hidden md:inline text-cyan-300 font-medium hover:underline cursor-pointer"
+          >
+            🏙️ Featured: Gurgaon Millennium City Encyclopedia
+          </span>
+        </div>
+
+        <div className="flex items-center gap-4">
+          {/* Currency Toggle */}
+          <div className="flex items-center bg-blue-950/80 border border-blue-800/60 rounded-full px-2 py-0.5 text-[11px]">
+            <Globe className="w-3 h-3 text-blue-300 mr-1" />
+            <button
+              onClick={() => setCurrency("INR")}
+              className={`px-1.5 py-0.5 rounded-full font-bold transition-colors ${
+                currency === "INR" ? "bg-blue-600 text-white" : "text-blue-300 hover:text-white"
+              }`}
+            >
+              ₹ INR
+            </button>
+            <button
+              onClick={() => setCurrency("USD")}
+              className={`px-1.5 py-0.5 rounded-full font-bold transition-colors ${
+                currency === "USD" ? "bg-blue-600 text-white" : "text-blue-300 hover:text-white"
+              }`}
+            >
+              $ USD
+            </button>
+          </div>
+
+          <div className="hidden sm:flex items-center gap-1 text-blue-300 text-[11px]">
+            <PhoneCall className="w-3 h-3 text-emerald-400" />
+            <span>24/7 Helpline:</span>
+            <span className="text-white font-bold">1800-102-8747</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Brand Logo */}
@@ -72,23 +121,23 @@ export default function Navbar({
               setActiveTab("flights");
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="flex items-center gap-3 cursor-pointer group select-none"
+            className="flex items-center gap-2.5 cursor-pointer group select-none"
           >
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-600/20 group-hover:scale-105 transition-transform">
-              <Compass className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform">
+              <Compass className="w-6 h-6 text-white" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-extrabold tracking-tight text-white leading-none">
-                Travel<span className="text-blue-500">Go</span>
+            <div>
+              <span className="text-2xl font-black tracking-tight text-white">
+                Travel<span className="text-blue-400">Go</span>
               </span>
-              <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-0.5">
-                Luxury Booking &amp; Wiki
+              <span className="block text-[9px] uppercase font-extrabold tracking-widest text-cyan-300 -mt-1">
+                MAKEMYTRIP &bull; WIKI TRAVEL
               </span>
             </div>
           </div>
 
-          {/* Desktop Clean Service Tabs */}
-          <nav className="hidden lg:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/60">
+          {/* Desktop Service Tabs */}
+          <nav className="hidden lg:flex items-center gap-1 bg-[#091b3a] p-1.5 rounded-2xl border border-blue-900/60">
             {navTabs.map((tab) => {
               const Icon = tab.icon;
               const isSelected = activeTab === tab.id;
@@ -96,59 +145,39 @@ export default function Navbar({
                 <button
                   key={tab.id}
                   onClick={() => handleTabClick(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
                     isSelected
-                      ? "bg-blue-600 text-white shadow-sm shadow-blue-500/20"
-                      : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
+                      : "text-blue-200 hover:text-white hover:bg-blue-900/40"
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-white" : "text-slate-400"}`} />
+                  <Icon className={`w-4 h-4 ${isSelected ? "text-white" : tab.color}`} />
                   <span>{tab.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          {/* Right Action Icons */}
+          {/* Right Action Buttons */}
           <div className="flex items-center gap-3">
-            {/* Currency Toggle */}
-            <div className="hidden sm:flex items-center bg-slate-900/80 border border-slate-800 rounded-xl p-1 text-[11px]">
-              <button
-                onClick={() => setCurrency("INR")}
-                className={`px-2 py-1 rounded-lg font-semibold transition-colors ${
-                  currency === "INR" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"
-                }`}
-              >
-                ₹ INR
-              </button>
-              <button
-                onClick={() => setCurrency("USD")}
-                className={`px-2 py-1 rounded-lg font-semibold transition-colors ${
-                  currency === "USD" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"
-                }`}
-              >
-                $ USD
-              </button>
-            </div>
-
-            {/* AI Travel Copilot Button */}
+            {/* AI Travel Copilot */}
             <button
               onClick={onOpenConcierge}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white hover:border-slate-700 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600/30 to-cyan-500/30 border border-cyan-400/40 text-xs font-bold text-cyan-300 hover:text-white hover:border-cyan-300 transition-all shadow-md shadow-cyan-500/10"
             >
-              <Bot className="w-4 h-4 text-blue-400" />
-              <span className="hidden md:inline">AI Concierge</span>
+              <Bot className="w-4 h-4 text-cyan-300 animate-pulse" />
+              <span className="hidden sm:inline">AI Concierge</span>
             </button>
 
-            {/* My Bookings / Trips */}
+            {/* My Bookings */}
             <button
               onClick={onOpenBookings}
-              className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600/10 border border-blue-500/20 text-xs font-semibold text-blue-400 hover:bg-blue-600/20 transition-all"
+              className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-950 border border-blue-800/80 text-xs font-bold text-blue-100 hover:text-white hover:bg-blue-900 transition-all"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 text-blue-400" />
               <span className="hidden sm:inline">My Trips</span>
               {bookingCount > 0 && (
-                <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-emerald-500 text-white text-[10px] font-black flex items-center justify-center animate-pulse">
                   {bookingCount}
                 </span>
               )}
@@ -157,16 +186,16 @@ export default function Navbar({
             {/* User Profile */}
             <button
               onClick={onOpenAuth}
-              className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-colors"
-              title="Account"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-500 transition-colors shadow-md shadow-blue-600/25"
             >
               <User className="w-4 h-4" />
+              <span className="hidden sm:inline">{user?.loggedIn ? user.name : "Login"}</span>
             </button>
 
             {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"
+              className="lg:hidden p-2 rounded-xl bg-blue-950 border border-blue-800 text-blue-200 hover:text-white"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -176,7 +205,7 @@ export default function Navbar({
 
       {/* Mobile Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-800/60 bg-[#08090e] px-4 py-4 space-y-2 animate-in slide-in-from-top-3">
+        <div className="lg:hidden border-t border-blue-900 bg-[#051329] px-4 py-4 space-y-2 animate-in slide-in-from-top-3">
           <div className="grid grid-cols-2 gap-2">
             {navTabs.map((tab) => {
               const Icon = tab.icon;
@@ -185,13 +214,13 @@ export default function Navbar({
                 <button
                   key={tab.id}
                   onClick={() => handleTabClick(tab.id)}
-                  className={`flex items-center gap-2.5 p-3 rounded-xl text-xs font-semibold text-left transition-all ${
+                  className={`flex items-center gap-2.5 p-3 rounded-xl text-xs font-bold text-left transition-all ${
                     isSelected
                       ? "bg-blue-600 text-white"
-                      : "bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800"
+                      : "bg-[#091b3a] border border-blue-900 text-blue-200 hover:bg-blue-900"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className={`w-4 h-4 ${isSelected ? "text-white" : tab.color}`} />
                   <span>{tab.label}</span>
                 </button>
               );

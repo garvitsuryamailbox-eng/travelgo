@@ -21,8 +21,7 @@ import {
   ArrowRight,
   Zap,
   MessageCircle,
-  Lock,
-  Share2
+  Lock
 } from "lucide-react";
 
 interface BookingModalProps {
@@ -65,7 +64,6 @@ export default function BookingModal({
   const basePrice = item.priceINR || item.pricePerNightINR || item.basePriceINR || item.pricePerPersonINR || 5000;
   const taxesAndFees = Math.round(basePrice * 0.12);
   const refundShieldCost = refundShieldEnabled ? 199 : 0;
-  const convenienceFee = 0; // ZERO on TravelGo!
   const finalPrice = Math.max(0, basePrice + taxesAndFees + refundShieldCost - (promoApplied ? discountAmount : 0));
 
   const formatPrice = (priceINR: number) => {
@@ -119,21 +117,16 @@ export default function BookingModal({
       setGeneratedTicket(bookingData);
       onBookingSuccess(bookingData);
       setStep("confirmed");
-    }, 1500);
-  };
-
-  const handleSendWhatsApp = () => {
-    setWhatsappSent(true);
-    alert(`E-Ticket & Boarding Pass sent to WhatsApp at ${phone}!`);
+    }, 1200);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl animate-in zoom-in-95">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl border border-slate-100 animate-in zoom-in-95 text-slate-900">
         {/* Header */}
-        <div className="bg-slate-950/80 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+        <div className="bg-[#051329] text-white px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white">
               {type === "flight" && <Plane className="w-4 h-4" />}
               {type === "hotel" && <Building2 className="w-4 h-4" />}
               {type === "cab" && <Car className="w-4 h-4" />}
@@ -141,18 +134,18 @@ export default function BookingModal({
               {type === "train" && <Plane className="w-4 h-4" />}
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">
-                {step === "confirmed" ? "Booking Confirmed & Guaranteed 🎉" : "Zero-Hidden-Fee Checkout"}
+              <h2 className="text-base font-black text-white">
+                {step === "confirmed" ? "Booking Confirmed 🎉" : "Complete Your Booking"}
               </h2>
-              <p className="text-[11px] text-slate-400">
-                {step === "confirmed" ? "Your verified voucher & DigiYatra pass is ready" : "All-inclusive transparent pricing with instant refund protection"}
+              <p className="text-xs text-blue-200">
+                {step === "confirmed" ? "Your verified voucher is ready" : "100% Upfront Price &bull; ₹0 Convenience Fee"}
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-blue-900/60 hover:bg-blue-800 text-blue-200 hover:text-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -160,175 +153,161 @@ export default function BookingModal({
 
         {/* STEP 1: DETAILS & CHECKOUT */}
         {step === "details" && (
-          <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+          <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
             {/* Summary Box */}
-            <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">
-                    {type.toUpperCase()} SUMMARY
-                  </span>
-                  {item.terminal && (
-                    <span className="px-2 py-0.2 rounded-md bg-cyan-500/10 text-cyan-300 text-[10px] font-bold border border-cyan-500/20">
-                      {item.terminal}
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-base font-bold text-white mt-0.5">
+                <span className="text-[10px] font-black text-blue-600 uppercase tracking-wider">
+                  {type.toUpperCase()} SUMMARY
+                </span>
+                <h3 className="text-base font-black text-slate-900 mt-0.5">
                   {item.name || item.airline || item.carModel || item.title}
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-500 mt-0.5">
                   {item.fromCity ? `${item.fromCity} (${item.departureTime}) → ${item.toCity} (${item.arrivalTime})` : item.area || item.destination}
                 </p>
               </div>
 
               <div className="text-right">
-                <span className="text-xs text-slate-400">Total Payable:</span>
-                <div className="text-xl font-black text-emerald-400">{formatPrice(finalPrice)}</div>
+                <span className="text-xs text-slate-500">Total Amount:</span>
+                <div className="text-xl font-black text-slate-900">{formatPrice(finalPrice)}</div>
               </div>
             </div>
 
-            {/* INSTANT 100% REFUND SHIELD TOGGLE (Solving Cancellation Anxiety) */}
+            {/* Refund Shield Toggle */}
             <div
               onClick={() => setRefundShieldEnabled(!refundShieldEnabled)}
-              className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3.5 ${
+              className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
                 refundShieldEnabled
-                  ? "bg-emerald-950/30 border-emerald-500/40 text-slate-200"
-                  : "bg-slate-950/40 border-slate-800 text-slate-400"
+                  ? "bg-emerald-50 border-emerald-300 text-slate-800"
+                  : "bg-slate-50 border-slate-200 text-slate-500"
               }`}
             >
               <div className={`w-5 h-5 rounded-md mt-0.5 flex items-center justify-center ${
-                refundShieldEnabled ? "bg-emerald-600 text-white" : "border border-slate-600"
+                refundShieldEnabled ? "bg-emerald-600 text-white" : "border border-slate-400"
               }`}>
                 {refundShieldEnabled && <CheckCircle2 className="w-4 h-4" />}
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-white flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-emerald-600" />
                     Instant 100% Refund Shield ({formatPrice(199)})
                   </span>
-                  <span className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <span className="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
                     ZERO PENALTY
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-300 mt-1">
-                  Cancel anytime before departure/check-in and get 100% full refund credited to your UPI in under 2 minutes with no questions asked.
+                <p className="text-xs text-slate-600 mt-1">
+                  100% full refund auto-credited to your UPI in under 2 minutes if cancelled anytime.
                 </p>
               </div>
             </div>
 
-            {/* Passenger Information */}
+            {/* Passenger Form */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-blue-400" />
+              <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <User className="w-3.5 h-3.5 text-blue-600" />
                 Primary Passenger / Guest Details
               </h4>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Full Name (as per Govt ID)</label>
+                  <label className="text-xs text-slate-600 font-bold block mb-1">Full Name</label>
                   <input
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs outline-none focus:border-blue-500"
-                    placeholder="e.g. Garvit Surya"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-bold outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Mobile Number (for WhatsApp Boarding Pass)</label>
+                  <label className="text-xs text-slate-600 font-bold block mb-1">Mobile Number (for WhatsApp Pass)</label>
                   <input
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs outline-none focus:border-blue-500"
-                    placeholder="+91 9876543210"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-bold outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="text-[11px] text-slate-400 block mb-1">Email (for Instant E-Ticket & Receipt)</label>
+                  <label className="text-xs text-slate-600 font-bold block mb-1">Email Address</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs outline-none focus:border-blue-500"
-                    placeholder="email@domain.com"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-bold outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Promo Code Box */}
+            {/* Promo Code */}
             <div className="space-y-2">
-              <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5 text-blue-400" />
-                Apply Promo Code / Coupon
+              <label className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-blue-600" />
+                Apply Coupon Code
               </label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
-                  className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs uppercase font-mono outline-none focus:border-blue-500"
-                  placeholder="Enter Code e.g. TRAVELGO500"
+                  className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs uppercase font-mono font-bold outline-none focus:border-blue-500"
                 />
                 <button
                   onClick={handleApplyPromo}
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors"
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase transition-colors"
                 >
                   Apply
                 </button>
               </div>
               {promoApplied && (
-                <div className="text-[11px] text-emerald-400 flex items-center gap-1 font-medium">
+                <div className="text-xs text-emerald-600 font-bold flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Code applied! You saved {formatPrice(discountAmount)}.
                 </div>
               )}
             </div>
 
-            {/* 100% Transparent Price Breakup (No Drip Pricing) */}
-            <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs">
-              <div className="flex justify-between text-slate-400">
+            {/* Transparent Price Breakup */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 text-xs">
+              <div className="flex justify-between text-slate-600 font-medium">
                 <span>Base Fare:</span>
                 <span>{formatPrice(basePrice)}</span>
               </div>
-              <div className="flex justify-between text-slate-400">
-                <span>Airport Taxes & GST (12%):</span>
+              <div className="flex justify-between text-slate-600 font-medium">
+                <span>Airport Taxes &amp; GST (12%):</span>
                 <span>{formatPrice(taxesAndFees)}</span>
               </div>
-              <div className="flex justify-between text-emerald-400 font-medium">
-                <span className="flex items-center gap-1">
-                  <Lock className="w-3 h-3 text-emerald-400" />
-                  Convenience Fee:
-                </span>
-                <span className="font-bold">₹0 (100% Waived)</span>
+              <div className="flex justify-between text-emerald-700 font-bold">
+                <span>Convenience Fee:</span>
+                <span>₹0 (100% Waived)</span>
               </div>
               {refundShieldEnabled && (
-                <div className="flex justify-between text-cyan-300 font-medium">
-                  <span>Instant 100% Refund Shield:</span>
+                <div className="flex justify-between text-blue-600 font-bold">
+                  <span>100% Refund Shield:</span>
                   <span>+{formatPrice(refundShieldCost)}</span>
                 </div>
               )}
               {promoApplied && (
-                <div className="flex justify-between text-emerald-400 font-semibold">
+                <div className="flex justify-between text-emerald-700 font-bold">
                   <span>Promo Discount:</span>
                   <span>-{formatPrice(discountAmount)}</span>
                 </div>
               )}
-              <div className="border-t border-slate-800 pt-2 flex justify-between font-black text-sm text-white">
-                <span>Grand Total (Final Payable):</span>
-                <span className="text-emerald-400">{formatPrice(finalPrice)}</span>
+              <div className="border-t border-slate-200 pt-2 flex justify-between font-black text-sm text-slate-900">
+                <span>Total Payable:</span>
+                <span className="text-blue-600 text-base">{formatPrice(finalPrice)}</span>
               </div>
             </div>
 
-            {/* Payment Modes */}
+            {/* Payment Method */}
             <div className="space-y-2">
-              <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block">
-                Select Payment Mode (Simulated Instant Payment)
+              <span className="text-xs font-black text-slate-900 uppercase tracking-wider block">
+                Select Payment Mode
               </span>
               <div className="grid grid-cols-3 gap-2">
                 {(["upi", "card", "netbanking"] as const).map((mode) => (
@@ -337,11 +316,11 @@ export default function BookingModal({
                     onClick={() => setPaymentMethod(mode)}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold capitalize transition-all ${
                       paymentMethod === mode
-                        ? "bg-blue-600/20 border-blue-500 text-blue-400"
-                        : "bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700"
+                        ? "bg-blue-50 border-blue-600 text-blue-600 shadow-sm"
+                        : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300"
                     }`}
                   >
-                    {mode === "upi" ? "UPI (Instant Auto-Refund Ready)" : mode === "card" ? "Credit / Debit Card" : "Net Banking"}
+                    {mode === "upi" ? "UPI (GPay / PhonePe)" : mode === "card" ? "Debit / Credit Card" : "Net Banking"}
                   </button>
                 ))}
               </div>
@@ -350,115 +329,113 @@ export default function BookingModal({
             {/* Proceed CTA */}
             <button
               onClick={handleConfirmBooking}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm shadow-xl shadow-emerald-600/25 active:scale-95 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black text-sm uppercase tracking-wider shadow-xl shadow-blue-500/25 active:scale-95 transition-all flex items-center justify-center gap-2"
             >
-              <span>PAY & CONFIRM BOOKING ({formatPrice(finalPrice)})</span>
+              <span>PAY &amp; CONFIRM BOOKING ({formatPrice(finalPrice)})</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         )}
 
-        {/* STEP 2: PROCESSING SIMULATION */}
+        {/* STEP 2: PROCESSING */}
         {step === "processing" && (
           <div className="p-12 text-center space-y-4">
-            <div className="w-16 h-16 rounded-full border-4 border-blue-500 border-t-transparent animate-spin mx-auto" />
-            <h3 className="text-lg font-bold text-white">Securing Confirmed Reservation & QR Pass...</h3>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              Registering your DigiYatra fast-track access and generating verified PNR with zero-cancellation shield.
+            <div className="w-14 h-14 rounded-full border-4 border-blue-600 border-t-transparent animate-spin mx-auto" />
+            <h3 className="text-lg font-black text-slate-900">Confirming Your Reservation...</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              Connecting with reservation engine to allocate confirmed seats and DigiYatra pass.
             </p>
           </div>
         )}
 
-        {/* STEP 3: CONFIRMED TICKET */}
+        {/* STEP 3: CONFIRMED E-TICKET */}
         {step === "confirmed" && generatedTicket && (
-          <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+          <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
             <div className="text-center space-y-1">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto mb-2">
-                <CheckCircle2 className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2 font-black">
+                <CheckCircle2 className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-black text-white">Booking Guaranteed & Confirmed!</h3>
-              <p className="text-xs text-slate-400">
-                PNR: <span className="font-mono font-bold text-blue-400 text-sm">{generatedTicket.pnr}</span> &bull; Sent to {email}
+              <h3 className="text-xl font-black text-slate-900">Booking Confirmed!</h3>
+              <p className="text-xs text-slate-500">
+                PNR: <strong className="text-blue-600 text-sm font-mono">{generatedTicket.pnr}</strong> &bull; Sent to {email}
               </p>
             </div>
 
-            {/* E-TICKET CARD */}
-            <div className="bg-slate-950 border border-slate-700/80 rounded-3xl p-5 space-y-4 relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            {/* Official E-Ticket Card */}
+            <div className="bg-slate-50 border border-slate-200 rounded-3xl p-5 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black text-xs">
                     TG
                   </div>
                   <div>
-                    <div className="text-xs font-black text-white">TRAVELGO OFFICIAL E-TICKET</div>
-                    <div className="text-[10px] text-slate-400">Verified TravelGo Voucher &bull; DigiYatra Enabled</div>
+                    <div className="text-xs font-black text-slate-900">TRAVELGO E-TICKET</div>
+                    <div className="text-[10px] text-slate-500">DigiYatra Fast Track Enabled</div>
                   </div>
                 </div>
 
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-black">
-                  CONFIRMED & PAID
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
+                  CONFIRMED &amp; PAID
                 </span>
               </div>
 
-              {/* Itinerary details */}
+              {/* Itinerary Data */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase">Passenger</span>
-                  <div className="font-bold text-white truncate">{generatedTicket.travelerName}</div>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Passenger</span>
+                  <div className="font-black text-slate-900 truncate">{generatedTicket.travelerName}</div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase">Service</span>
-                  <div className="font-bold text-white truncate">{generatedTicket.itemTitle}</div>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Service</span>
+                  <div className="font-black text-slate-900 truncate">{generatedTicket.itemTitle}</div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase">Booking PNR</span>
-                  <div className="font-mono font-bold text-cyan-400">{generatedTicket.pnr}</div>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Booking PNR</span>
+                  <div className="font-mono font-black text-blue-600">{generatedTicket.pnr}</div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase">Amount Paid</span>
-                  <div className="font-bold text-emerald-400">{formatPrice(generatedTicket.finalPrice)}</div>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Amount Paid</span>
+                  <div className="font-black text-emerald-700">{formatPrice(generatedTicket.finalPrice)}</div>
                 </div>
               </div>
 
               {/* WhatsApp Boarding Pass Action */}
-              <div className="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs text-emerald-300 font-semibold">
-                  <MessageCircle className="w-4 h-4 text-emerald-400" />
-                  <span>Receive Boarding Pass & Updates on WhatsApp</span>
+              <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-emerald-900 font-bold">
+                  <MessageCircle className="w-4 h-4 text-emerald-600" />
+                  <span>Receive Boarding Pass on WhatsApp</span>
                 </div>
                 <button
-                  onClick={handleSendWhatsApp}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                    whatsappSent ? "bg-emerald-600 text-white" : "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
-                  }`}
+                  onClick={() => alert(`Boarding pass sent to WhatsApp at ${phone}!`)}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-black shadow-sm"
                 >
-                  {whatsappSent ? "Sent to WhatsApp ✓" : "Send to WhatsApp"}
+                  Send to WhatsApp
                 </button>
               </div>
 
               {/* QR Code */}
-              <div className="border-t border-dashed border-slate-800 pt-3 flex items-center justify-between">
+              <div className="border-t border-dashed border-slate-200 pt-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-white p-1 rounded-xl flex items-center justify-center">
-                    <QrCode className="w-10 h-10 text-slate-950" />
+                  <div className="w-12 h-12 bg-white p-1 rounded-xl border border-slate-200 flex items-center justify-center shadow-sm">
+                    <QrCode className="w-10 h-10 text-slate-900" />
                   </div>
-                  <div className="text-[11px] text-slate-400">
-                    <div>Scan at airport terminal / hotel reception</div>
-                    <div className="font-mono text-[10px] text-slate-400">ID: {generatedTicket.id}</div>
+                  <div className="text-[11px] text-slate-500">
+                    <div>Scan at airport / hotel check-in</div>
+                    <div className="font-mono text-[10px]">ID: {generatedTicket.id}</div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => window.print()}
-                    className="p-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white"
-                    title="Print Ticket"
+                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+                    title="Print"
                   >
                     <Printer className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => alert("E-Ticket downloaded to your device.")}
-                    className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-500"
+                    onClick={() => alert("E-Ticket downloaded.")}
+                    className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download PDF</span>
@@ -469,7 +446,7 @@ export default function BookingModal({
 
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-colors"
+              className="w-full py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors"
             >
               Done / Return to Home
             </button>
