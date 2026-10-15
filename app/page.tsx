@@ -18,9 +18,11 @@ import Footer from "../components/Footer";
 import TripPlannerCard from "../components/TripPlannerCard";
 import BudgetDiscovery from "../components/BudgetDiscovery";
 import CompleteTripCard from "../components/CompleteTripCard";
+import MobileBottomNav from "../components/MobileBottomNav";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>("flights");
+  const [mobileSection, setMobileSection] = useState<string>("search");
   const [currency, setCurrency] = useState<"INR" | "USD">("INR");
   const [user, setUser] = useState<{ name: string; loggedIn: boolean; email?: string } | null>({
     name: "Garvit Surya",
@@ -339,13 +341,25 @@ export default function Home() {
         />
       </main>
 
-      {/* ── 12. FOOTER ── */}
-      <Footer
-        onOpenWiki={handleOpenCityGuide}
-        onSetTab={(tab) => {
-          setActiveTab(tab);
-          window.scrollTo({ top: 120, behavior: "smooth" });
-        }}
+      {/* ── 12. FOOTER (With Extra Bottom Spacing for Mobile Sticky Nav) ── */}
+      <div className="pb-16 md:pb-0">
+        <Footer
+          onOpenWiki={handleOpenCityGuide}
+          onSetTab={(tab) => {
+            setActiveTab(tab);
+            window.scrollTo({ top: 120, behavior: "smooth" });
+          }}
+        />
+      </div>
+
+      {/* ── 13. STICKY MOBILE BOTTOM NAVIGATION BAR ── */}
+      <MobileBottomNav
+        activeSection={mobileSection}
+        onNavigate={(sec) => setMobileSection(sec)}
+        bookingCount={bookings.length}
+        onOpenBookings={() => setBookingsDrawerOpen(true)}
+        onOpenAuth={() => setAuthModalOpen(true)}
+        isLoggedIn={Boolean(user?.loggedIn)}
       />
 
       {/* ── MODALS ── */}

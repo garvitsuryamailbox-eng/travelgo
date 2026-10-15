@@ -36,7 +36,7 @@ export default function OffersBanner({ onApplyPromoCode }: OffersBannerProps) {
   });
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    <section id="offers-banner-section" className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       {/* MakeMyTrip Offers Header with Horizontal Tabs */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
