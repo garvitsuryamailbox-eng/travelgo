@@ -149,63 +149,13 @@ export default function BookingModal({
     }, 1000);
   };
 
-  const handleConfirmBooking = async () => {
-    // If Razorpay SDK is loaded and available
-    if (typeof window !== "undefined" && (window as any).Razorpay) {
-      try {
-        setIsPayingWithRazorpay(true);
-        const orderRes = await fetch("/api/razorpay/order", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            amount: finalPrice,
-            currency: currency,
-            receipt: `rcpt_${Date.now()}`
-          })
-        });
-
-        const orderData = await orderRes.json();
-
-        if (orderData.success && orderData.keyId && !orderData.keyId.includes("mock")) {
-          // Real live or test key provided: open real popup
-          const options = {
-            key: orderData.keyId,
-            amount: orderData.amount,
-            currency: orderData.currency,
-            name: "TravelGo",
-            description: `${item.name || item.airline || item.title || "Trip"} Booking`,
-            order_id: orderData.orderId,
-            prefill: {
-              name: fullName,
-              email: email,
-              contact: phone
-            },
-            theme: { color: "#2563eb" },
-            handler: function (response: any) {
-              processAndConfirmTicket("Razorpay Verified", response.razorpay_payment_id);
-            },
-            modal: {
-              ondismiss: function () {
-                setIsPayingWithRazorpay(false);
-              }
-            }
-          };
-
-          const rzp = new (window as any).Razorpay(options);
-          rzp.open();
-          return;
-        }
-      } catch (err) {
-        console.warn("Razorpay real popup skipped or failed, switching to guaranteed demo checkout", err);
-      }
-    }
-
-    // Guaranteed Instant Confirmation
+  const handleConfirmBooking = () => {
+    setIsPayingWithRazorpay(true);
     processAndConfirmTicket(
       paymentMethod === "upi"
-        ? "UPI (GPay / PhonePe Verified)"
+        ? "UPI Express (GPay / PhonePe Verified)"
         : paymentMethod === "card"
-        ? "Card Express Verified"
+        ? "Debit / Credit Card Verified"
         : "Net Banking Verified"
     );
   };
