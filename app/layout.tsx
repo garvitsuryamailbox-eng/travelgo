@@ -27,7 +27,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
       </head>
-      <body className="min-h-screen bg-[#f2f5f8] text-slate-800 antialiased selection:bg-blue-600 selection:text-white font-sans">
+      <body className="min-h-screen bg-[#f2f5f8] text-slate-800 antialiased selection:bg-blue-600 selection:text-white font-sans" style={{width: '100%', maxWidth: '100vw', overflowX: 'hidden', position: 'relative'}}>
         {children}
       </body>
     </html>

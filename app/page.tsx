@@ -204,7 +204,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f2f5f8] text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen bg-[#f2f5f8] text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white" style={{width: '100%', maxWidth: '100vw', overflowX: 'hidden'}}>
       {/* Toast Notification Layer */}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
@@ -222,10 +222,10 @@ export default function Home() {
         onOpenConcierge={() => setConciergeModalOpen(true)}
       />
 
-      <main className="flex-1">
+      <main className="flex-1 w-full overflow-x-hidden" style={{width: '100%', maxWidth: '100vw'}}>
 
         {/* ── 2. HERO — Planning-first ── */}
-        <section className="relative bg-[#051334] text-white overflow-hidden">
+        <section className="relative bg-[#051334] text-white overflow-hidden" style={{width: '100%', left: 0, right: 0}}>
           {/* Background gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#051334] via-[#08204a] to-[#0a2d5e] opacity-100" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,140,255,0.15),transparent_60%)]" />

@@ -72,7 +72,7 @@ export default function Navbar({
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#051334] text-white shadow-md border-b border-[#0a225c]">
+    <header className="sticky top-0 z-50 bg-[#051334] text-white shadow-md border-b border-[#0a225c] w-full" style={{left: 0, right: 0, width: '100%', maxWidth: '100vw'}}>
 
       {/* Main Brand & Action Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
