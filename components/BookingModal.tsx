@@ -21,7 +21,8 @@ import {
   ArrowRight,
   Zap,
   MessageCircle,
-  Lock
+  Lock,
+  Copy
 } from "lucide-react";
 
 interface BookingModalProps {
@@ -568,7 +569,7 @@ export default function BookingModal({
             </div>
 
             {/* Payment Method */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <span className="text-xs font-black text-slate-900 uppercase tracking-wider block">
                 Select Payment Mode
               </span>
@@ -587,6 +588,70 @@ export default function BookingModal({
                   </button>
                 ))}
               </div>
+
+              {/* REAL UPI QR CODE SCANNER SECTION */}
+              {paymentMethod === "upi" && (
+                <div className="bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 border-2 border-blue-200 rounded-3xl p-5 text-center shadow-sm space-y-3 animate-in fade-in zoom-in-95">
+                  <div className="flex items-center justify-between border-b border-blue-200/80 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-xs">
+                        G
+                      </div>
+                      <div className="text-left">
+                        <div className="text-xs font-black text-slate-950">GARVIT SURYA</div>
+                        <div className="text-[10px] text-blue-700 font-bold">Official Booking UPI Merchant</div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full border border-emerald-300">
+                      ✓ Instant Verified
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-600 font-medium">
+                    Scan via <strong>Google Pay, PhonePe, Paytm, BHIM</strong> or any UPI App:
+                  </p>
+
+                  {/* QR Image Frame */}
+                  <div className="relative inline-block mx-auto bg-white p-3 rounded-2xl border-2 border-blue-300 shadow-md">
+                    <img
+                      src="/payment/upi-qr.jpg"
+                      alt="Garvit Surya UPI QR Code"
+                      className="w-48 h-48 sm:w-56 sm:h-56 object-contain rounded-xl mx-auto"
+                    />
+                    <div className="mt-2 text-center">
+                      <span className="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md">
+                        Amount to Pay: {formatPrice(finalPrice)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Copy UPI ID */}
+                  <div className="flex items-center justify-center gap-2 pt-1">
+                    <span className="text-[11px] font-mono font-bold bg-white px-3 py-1.5 rounded-xl border border-blue-200 text-slate-800">
+                      garvitsuryamailbox@okhdfcbank
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText("garvitsuryamailbox@okhdfcbank");
+                        onShowToast?.({
+                          type: "success",
+                          title: "UPI ID Copied!",
+                          message: "garvitsuryamailbox@okhdfcbank copied to clipboard."
+                        });
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-black flex items-center gap-1 transition-all active:scale-95 shadow-sm"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy</span>
+                    </button>
+                  </div>
+
+                  <div className="text-[11px] text-emerald-700 font-bold bg-emerald-50 py-1.5 px-3 rounded-xl border border-emerald-200">
+                    ⚡ Scan &amp; Pay directly into account, then click below to generate instant E-Ticket!
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Proceed CTA */}
