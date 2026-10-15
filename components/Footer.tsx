@@ -1,7 +1,10 @@
 "use client";
 
 import React from "react";
-import { Compass, ShieldCheck, CreditCard, Lock, PhoneCall, Globe, CheckCircle2 } from "lucide-react";
+import {
+  Compass, ShieldCheck, Lock, Zap, Globe,
+  ExternalLink, Mail, Phone, ArrowUpRight, Share2,
+} from "lucide-react";
 
 interface FooterProps {
   onOpenWiki: (destId?: string) => void;
@@ -9,157 +12,197 @@ interface FooterProps {
 }
 
 export default function Footer({ onOpenWiki, onSetTab }: FooterProps) {
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
-    <footer className="bg-[#051334] text-slate-300 text-xs border-t border-[#0a225c]">
-      {/* Top Value Strip (MMT Style) */}
-      <div className="border-b border-white/10 py-6 bg-[#040f2a]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-sky-400">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-white font-bold text-sm">Transparent Pricing, Always</div>
-              <div className="text-slate-400 text-xs mt-0.5">Full cost breakdown shown before checkout • No surprise fees</div>
-            </div>
-          </div>
+    <footer style={{ background: "#020d28", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
 
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-400/20 flex items-center justify-center text-emerald-400">
-              <Lock className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-white font-bold text-sm">Clear Cancellation Info</div>
-              <div className="text-slate-400 text-xs mt-0.5">Refund preview shown before you pay • Demo prototype</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-400/20 flex items-center justify-center text-sky-400">
-              <PhoneCall className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-white font-bold text-sm">Portfolio Demo Project</div>
-              <div className="text-slate-400 text-xs mt-0.5">Not a real travel agency • For demonstration purposes only</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Links */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white shadow-sm">
-              <Compass className="w-4 h-4" />
-            </div>
-            <span className="text-lg font-black text-white tracking-tight">
-              Travel<span className="text-sky-400">go</span>
-            </span>
-          </div>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            India&apos;s leading transparent travel booking platform. Enjoy zero convenience fees, verified hotel stays, and guaranteed airport transfers.
-          </p>
-          <div className="mt-4 flex items-center gap-2 text-[11px] text-emerald-400 font-semibold">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>IATA &amp; DigiYatra Certified</span>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="font-bold text-white mb-3 uppercase tracking-wider text-[11px]">
-            Where2Go Guides
-          </h4>
-          <ul className="space-y-2 text-slate-300 text-xs">
-            <li>
-              <button onClick={() => onOpenWiki("delhi")} className="hover:text-white transition-colors cursor-pointer">
-                New Delhi Capital &amp; Aerocity
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onOpenWiki("goa")} className="hover:text-white transition-colors cursor-pointer">
-                Goa Coast &amp; Beachfront Villas
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onOpenWiki("jaipur")} className="hover:text-white transition-colors cursor-pointer">
-                Jaipur Pink City &amp; Royal Forts
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onOpenWiki("gurgaon")} className="hover:text-white transition-colors cursor-pointer">
-                Gurgaon Cyber City &amp; Golf Course Rd
-              </button>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-bold text-white mb-3 uppercase tracking-wider text-[11px]">
-            Travel Services
-          </h4>
-          <ul className="space-y-2 text-slate-300 text-xs">
-            <li>
-              <button onClick={() => onSetTab("flights")} className="hover:text-white transition-colors cursor-pointer">
-                Domestic &amp; International Flights
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onSetTab("hotels")} className="hover:text-white transition-colors cursor-pointer">
-                5★ Hotels &amp; Homestays
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onSetTab("trains")} className="hover:text-white transition-colors cursor-pointer">
-                Vande Bharat Express Trains
-              </button>
-            </li>
-            <li>
-              <button onClick={() => onSetTab("cabs")} className="hover:text-white transition-colors cursor-pointer">
-                Guaranteed Airport Cabs (T3/T2)
-              </button>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-bold text-white mb-3 uppercase tracking-wider text-[11px]">
-            Trust &amp; Security
-          </h4>
-          <ul className="space-y-2 text-slate-300 text-xs">
-            <li>Zero Convenience Fee Policy</li>
-            <li>Instant UPI Refund Terms</li>
-            <li>Privacy Policy &amp; Security</li>
-            <li>24x7 Helpline: 1800-102-8747</li>
-          </ul>
-
-          <div className="mt-4 pt-3 border-t border-white/10">
-            <div className="text-[10px] text-slate-400 uppercase font-bold mb-1.5">Payment Security</div>
-            <div className="flex items-center gap-2 text-slate-400 text-xs">
-              <span className="px-2 py-0.5 rounded bg-white/10 text-white font-bold text-[10px]">UPI</span>
-              <span className="px-2 py-0.5 rounded bg-white/10 text-white font-bold text-[10px]">RuPay</span>
-              <span className="px-2 py-0.5 rounded bg-white/10 text-white font-bold text-[10px]">Visa</span>
-              <span className="px-2 py-0.5 rounded bg-white/10 text-white font-bold text-[10px]">MasterCard</span>
-            </div>
+      {/* ── TOP VALUE STRIP ── */}
+      <div style={{ background: "rgba(255,255,255,0.025)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {[
+              {
+                icon: ShieldCheck,
+                title: "Transparent Pricing",
+                desc: "Full breakdown before checkout. Zero hidden fees.",
+                color: "#0057e4",
+              },
+              {
+                icon: Lock,
+                title: "Secure & Private",
+                desc: "Your data is encrypted. Payments are demo-only.",
+                color: "#059669",
+              },
+              {
+                icon: Zap,
+                title: "Portfolio Demo",
+                desc: "Built for showcase. No real bookings are processed.",
+                color: "#f59e0b",
+              },
+            ].map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div key={i} className="flex items-center gap-4">
+                  <div
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+                    style={{ background: item.color + "18", border: `1px solid ${item.color}28` }}
+                  >
+                    <Icon className="w-5 h-5" style={{ color: item.color }} />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-white">{item.title}</div>
+                    <div className="text-xs text-slate-400 mt-0.5">{item.desc}</div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      {/* Bottom Copyright Bar */}
-      <div className="border-t border-white/10 py-4 bg-[#030c24]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-400 text-[11px]">
+      {/* ── MAIN FOOTER LINKS ── */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+
+          {/* Brand Column */}
+          <div className="col-span-2 md:col-span-1">
+            <div
+              className="flex items-center gap-2.5 mb-4 cursor-pointer"
+              onClick={scrollToTop}
+            >
+              <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                <Compass className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-black text-white tracking-tight" style={{ fontFamily: "Poppins, sans-serif" }}>
+                Travel<span className="text-sky-400">go</span>
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed mb-5 max-w-[220px]">
+              India&apos;s transparent travel planning prototype. Compare full trip costs before you commit.
+            </p>
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-2.5">
+              {["GH", "LI", "TW", "IG"].map((label) => (
+                <a
+                  key={label}
+                  href="#"
+                  aria-label={label}
+                  className="w-8 h-8 rounded-xl flex items-center justify-center transition-all hover:-translate-y-0.5 text-slate-400 hover:text-white text-[10px] font-black"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Destinations */}
           <div>
-            &copy; 2026 TravelGo &mdash; Portfolio Prototype by Garvit Surya
+            <h4 className="text-[11px] font-black uppercase tracking-[0.12em] text-slate-500 mb-5">City Guides</h4>
+            <ul className="space-y-3">
+              {[
+                { id: "delhi",   label: "New Delhi & Aerocity" },
+                { id: "goa",     label: "Goa Beaches & Villas" },
+                { id: "jaipur",  label: "Jaipur Pink City" },
+                { id: "gurgaon", label: "Gurgaon Cyber City" },
+              ].map((d) => (
+                <li key={d.id}>
+                  <button
+                    onClick={() => onOpenWiki(d.id)}
+                    className="group flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <span>{d.label}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="text-amber-400 font-bold text-[10px]">
-            ⚠️ Demo only. No real bookings, payments, or airline partnerships.
+
+          {/* Services */}
+          <div>
+            <h4 className="text-[11px] font-black uppercase tracking-[0.12em] text-slate-500 mb-5">Services</h4>
+            <ul className="space-y-3">
+              {[
+                { tab: "flights",  label: "Domestic Flights" },
+                { tab: "hotels",   label: "5★ Hotels & Stays" },
+                { tab: "trains",   label: "Vande Bharat Trains" },
+                { tab: "cabs",     label: "Airport Transfers" },
+                { tab: "packages", label: "Holiday Packages" },
+              ].map((s) => (
+                <li key={s.tab}>
+                  <button
+                    onClick={() => onSetTab(s.tab)}
+                    className="group flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <span>{s.label}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="hover:text-white cursor-pointer">Privacy</span>
-            <span>&bull;</span>
-            <span className="hover:text-white cursor-pointer">Terms</span>
-            <span>&bull;</span>
-            <span className="hover:text-white cursor-pointer">Site Map</span>
+
+          {/* Contact & Security */}
+          <div>
+            <h4 className="text-[11px] font-black uppercase tracking-[0.12em] text-slate-500 mb-5">Contact</h4>
+            <ul className="space-y-3 mb-6">
+              <li className="flex items-center gap-2 text-xs text-slate-400">
+                <Mail className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span>support@travelgo.in</span>
+              </li>
+              <li className="flex items-center gap-2 text-xs text-slate-400">
+                <Phone className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span>1800-102-8747</span>
+              </li>
+              <li className="flex items-center gap-2 text-xs text-slate-400">
+                <Globe className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <span>travelgo.vercel.app</span>
+              </li>
+            </ul>
+
+            {/* Payment Badges */}
+            <div className="pt-4 border-t border-white/8">
+              <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider mb-2.5">Accepted Payments</div>
+              <div className="flex flex-wrap gap-1.5">
+                {["UPI", "GPay", "RuPay", "Visa", "MC"].map((m) => (
+                  <span
+                    key={m}
+                    className="px-2 py-0.5 rounded-lg text-[9px] font-black text-slate-300"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  >
+                    {m}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── BOTTOM BAR ── */}
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", background: "rgba(0,0,0,0.2)" }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-[11px] text-slate-500">
+            © 2026 TravelGo &mdash; Portfolio Prototype by{" "}
+            <span className="text-slate-400 font-semibold">Garvit Surya</span>
+          </div>
+
+          <div
+            className="px-3 py-1.5 rounded-xl text-[10px] font-bold text-amber-400"
+            style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.15)" }}
+          >
+            ⚠️ Demo only · No real payments processed
+          </div>
+
+          <div className="flex items-center gap-4 text-[11px] text-slate-500">
+            <span className="hover:text-slate-300 cursor-pointer transition-colors">Privacy</span>
+            <span className="text-slate-700">·</span>
+            <span className="hover:text-slate-300 cursor-pointer transition-colors">Terms</span>
+            <span className="text-slate-700">·</span>
+            <span className="hover:text-slate-300 cursor-pointer transition-colors">Sitemap</span>
           </div>
         </div>
       </div>

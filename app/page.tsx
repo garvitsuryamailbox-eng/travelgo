@@ -224,48 +224,76 @@ export default function Home() {
 
       <main className="flex-1 w-full overflow-x-hidden" style={{width: '100%', maxWidth: '100vw'}}>
 
-        {/* ── 2. HERO — Planning-first ── */}
-        <section className="relative bg-[#051334] text-white overflow-hidden" style={{width: '100%', left: 0, right: 0}}>
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#051334] via-[#08204a] to-[#0a2d5e] opacity-100" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,140,255,0.15),transparent_60%)]" />
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#f2f5f8] to-transparent" />
+        {/* ── 2. HERO — Premium redesign ── */}
+        <section className="relative text-white overflow-hidden" style={{width: '100%', minHeight: '540px', background: 'linear-gradient(135deg, #020d28 0%, #041847 45%, #071f5c 100%)'}}>
+          {/* Decorative blobs */}
+          <div className="absolute top-0 left-0 w-96 h-96 rounded-full pointer-events-none" style={{background: 'radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%)', transform: 'translate(-30%, -30%)'}} />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none" style={{background: 'radial-gradient(circle, rgba(0,87,228,0.14) 0%, transparent 70%)', transform: 'translate(20%, 30%)'}} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full pointer-events-none opacity-30" style={{background: 'radial-gradient(ellipse, rgba(56,189,248,0.08) 0%, transparent 60%)'}} />
 
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24 text-center">
-            {/* Demo badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-6">
+          {/* Subtle grid lines */}
+          <div className="absolute inset-0 pointer-events-none" style={{backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '64px 64px'}} />
+
+          {/* Bottom fade to light */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none" style={{background: 'linear-gradient(to bottom, transparent, #f0f4f8)'}} />
+
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 lg:pt-24 pb-20 text-center">
+
+            {/* Demo Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8" style={{background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.3)'}}>
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              Portfolio Prototype · Demo Prices Only
+              <span className="text-amber-300 text-[11px] font-bold uppercase tracking-[0.15em]">Portfolio Prototype · Demo Prices Only</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-5">
+            {/* Headline */}
+            <h1 className="font-black text-white leading-[1.05] mb-6" style={{fontFamily: 'Poppins, sans-serif', fontSize: 'clamp(2.2rem, 6vw, 3.8rem)', letterSpacing: '-0.03em'}}>
               Your Next Journey
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-400">
+              <span style={{background: 'linear-gradient(135deg, #60a5fa, #38bdf8, #7dd3fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>
                 Starts With a Plan
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-300 font-medium max-w-2xl mx-auto mb-8 leading-relaxed">
-              Plan your trip, understand the real cost, and explore everything before you book.
+            {/* Subtitle */}
+            <p className="text-slate-300 font-medium max-w-xl mx-auto mb-10 leading-relaxed" style={{fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)'}}>
+              Compare real trip costs — flights, hotels & transfers — all in one place.
               <br />
-              <span className="text-sky-400 font-bold">Know the trip. Know the cost. Then book.</span>
+              <span className="text-sky-400 font-semibold">Know the cost. Then book smart. ✈️</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
               <button
                 id="hero-plan-trip-btn"
                 onClick={scrollToPlanner}
-                className="flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-400 hover:to-indigo-400 text-white font-black text-sm shadow-xl shadow-blue-500/30 active:scale-95 transition-all"
+                className="flex items-center gap-2.5 px-8 py-4 rounded-2xl text-white font-black text-sm active:scale-95 transition-all"
+                style={{background: 'linear-gradient(135deg, #0057e4, #0284c7)', boxShadow: '0 8px 32px rgba(0,87,228,0.45)'}}
               >
                 🗺️ Plan My Trip
               </button>
+              <button
+                onClick={scrollToSearch}
+                className="flex items-center gap-2.5 px-8 py-4 rounded-2xl text-white font-bold text-sm active:scale-95 transition-all"
+                style={{background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)'}}
+              >
+                ✈️ Search Flights
+              </button>
+            </div>
+
+            {/* Trust Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {[['🔒', 'Zero Hidden Fees'], ['⚡', 'Instant Confirmation'], ['📊', 'Full Cost Breakdown'], ['🎯', '2M+ Trips Planned']].map(([emoji, label]) => (
+                <div key={label} className="trust-pill">
+                  <span>{emoji}</span>
+                  <span>{label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* ── 3. SEARCH WIDGET ── */}
-        <div id="booking-search-widget" className="bg-white border-y border-slate-200 py-2">
+        <div id="booking-search-widget" className="relative" style={{background: 'white', borderBottom: '1px solid rgba(15,23,42,0.08)'}}>
           <HeroBookingWidget
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -288,19 +316,24 @@ export default function Home() {
         )}
 
         {/* ── 6. TRIP PLANNER ── */}
-        <section id="trip-planner-section" className="py-8 max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="mb-6 text-center">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">
-              <span>🗺️ PLAN YOUR TRIP</span>
+        <section id="trip-planner-section" className="py-16" style={{background: 'white'}}>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
+            <div className="mb-8 text-center">
+              <div className="section-eyebrow justify-center">
+                <span>🗺️ Smart Planning</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900" style={{fontFamily: 'Poppins, sans-serif', letterSpacing: '-0.03em'}}>
+                Where Do You Want to Go?
+              </h2>
+              <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto font-medium">
+                Plan your complete trip — budget, itinerary & experiences — before you book
+              </p>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-              Where Do You Want to Go?
-            </h2>
+            <TripPlannerCard
+              onSearch={handleSearch}
+              onOpenConcierge={() => setConciergeModalOpen(true)}
+            />
           </div>
-          <TripPlannerCard
-            onSearch={handleSearch}
-            onOpenConcierge={() => setConciergeModalOpen(true)}
-          />
         </section>
 
 
@@ -325,11 +358,14 @@ export default function Home() {
             setAppliedPromo(code);
             showToast({
               type: "success",
-              title: "Promo Code Selected!",
+              title: "Promo Code Copied!",
               message: `Code "${code}" activated. Demo discount will be shown at checkout.`
             });
           }}
         />
+
+        {/* ── 11. TRUST & ASSURANCE ── */}
+        <PassengerAssuranceBanner />
 
         {/* ── 11. CITY GUIDES ── */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
