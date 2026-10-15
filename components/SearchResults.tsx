@@ -23,10 +23,12 @@ import {
   HOTELS_DATABASE,
   CABS_DATABASE,
   PACKAGES_DATABASE,
+  TRAINS_DATABASE,
   FlightItem,
   HotelItem,
   CabItem,
-  PackageItem
+  PackageItem,
+  TrainItem
 } from "../data/bookingData";
 
 interface SearchResultsProps {
@@ -48,6 +50,7 @@ export default function SearchResults({
   const [maxPrice, setMaxPrice] = useState<number>(50000);
   const [sortBy, setSortBy] = useState<"price-low" | "price-high" | "rating" | "popular">("popular");
   const [onlyNonStop, setOnlyNonStop] = useState(false);
+  const [onlyRefundable, setOnlyRefundable] = useState(false);
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
 
   const formatPrice = (priceINR: number) => {
@@ -57,18 +60,28 @@ export default function SearchResults({
     return `₹${priceINR.toLocaleString("en-IN")}`;
   };
 
-  // Filtered Flights
+  // Route-aware flight filtering
+  const searchFromCode = searchParams?.fromCity?.code || "";
+  const searchToCode = searchParams?.toCity?.code || "";
+
   const flights = useMemo(() => {
     return FLIGHTS_DATABASE.filter((fl) => {
       if (fl.priceINR > maxPrice) return false;
       if (onlyNonStop && fl.stops !== "Non-stop") return false;
+      if (onlyRefundable && !fl.refundable) return false;
+      // Route filter: if user has searched a specific route, match it
+      if (searchFromCode && searchToCode) {
+        const fromMatch = fl.fromCode === searchFromCode;
+        const toMatch = fl.toCode === searchToCode;
+        if (!fromMatch || !toMatch) return false;
+      }
       return true;
     }).sort((a, b) => {
       if (sortBy === "price-low") return a.priceINR - b.priceINR;
       if (sortBy === "price-high") return b.priceINR - a.priceINR;
       return 0;
     });
-  }, [maxPrice, onlyNonStop, sortBy]);
+  }, [maxPrice, onlyNonStop, onlyRefundable, sortBy, searchFromCode, searchToCode]);
 
   // Filtered Hotels
   const hotels = useMemo(() => {
@@ -109,15 +122,15 @@ export default function SearchResults({
   }, [maxPrice, sortBy]);
 
   return (
-    <div id="search-results-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div id="search-results-section" className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       {/* Header Banner */}
       <div className="bg-white border border-slate-200/80 rounded-3xl p-5 mb-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-black uppercase">
-              Live Fares
+            <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-xs font-black uppercase">
+              Demo Fares
             </span>
-            <span className="text-xs text-slate-500">&bull; 100% Upfront Transparent Pricing</span>
+            <span className="text-xs text-slate-500">&bull; Sample prices for planning — not real bookings</span>
           </div>
 
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
@@ -158,6 +171,7 @@ export default function SearchResults({
                 onClick={() => {
                   setMaxPrice(50000);
                   setOnlyNonStop(false);
+                  setOnlyRefundable(false);
                   setSelectedStar(null);
                 }}
                 className="text-[11px] text-blue-600 hover:text-blue-700 font-bold"
@@ -185,8 +199,8 @@ export default function SearchResults({
 
             {/* Flight filter */}
             {type === "flights" && (
-              <div>
-                <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block mb-2">Stops</span>
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block mb-2">Flight Options</span>
                 <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium">
                   <input
                     type="checkbox"
@@ -195,6 +209,15 @@ export default function SearchResults({
                     className="w-4 h-4 rounded accent-blue-600"
                   />
                   <span>Direct Flights Only</span>
+                </label>
+                <label className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer font-medium">
+                  <input
+                    type="checkbox"
+                    checked={onlyRefundable}
+                    onChange={(e) => setOnlyRefundable(e.target.checked)}
+                    className="w-4 h-4 rounded accent-blue-600"
+                  />
+                  <span>Refundable Only</span>
                 </label>
               </div>
             )}
@@ -225,13 +248,13 @@ export default function SearchResults({
             <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-100 text-xs space-y-1.5">
               <div className="font-bold text-blue-900">Visiting Gurgaon?</div>
               <p className="text-blue-700 text-[11px] leading-relaxed">
-                Check our Wikipedia destination guide for CyberHub dining and Metro connectivity.
+                Explore our curated destination guide for CyberHub dining, night life &amp; Metro connectivity.
               </p>
               <button
                 onClick={() => onOpenWiki("gurgaon")}
                 className="text-blue-600 font-extrabold hover:underline block text-[11px] pt-1"
               >
-                Read Gurgaon Encyclopedia →
+                Read City Guide &rarr;
               </button>
             </div>
           </div>
@@ -293,14 +316,17 @@ export default function SearchResults({
                   <div className="flex items-center sm:flex-col sm:items-end justify-between border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0">
                     <div>
                       <div className="text-2xl font-black text-slate-900">{formatPrice(flight.priceINR)}</div>
-                      <div className="text-[11px] text-emerald-600 font-bold">100% All-Inclusive</div>
+                      <div className="text-[10px] text-slate-400 font-bold mt-0.5">Base {formatPrice(Math.round(flight.priceINR * 0.87))} + Tax {formatPrice(Math.round(flight.priceINR * 0.13))}</div>
+                      <span className="text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md">
+                        Demo Fare
+                      </span>
                     </div>
 
                     <button
                       onClick={() => onBookItem(flight, "flight")}
                       className="mt-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-500/25 active:scale-95 transition-all"
                     >
-                      BOOK NOW
+                      SELECT
                     </button>
                   </div>
                 </div>
@@ -420,35 +446,104 @@ export default function SearchResults({
               </div>
             ))}
 
-          {/* TRAINS */}
-          {type === "trains" && (
-            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 text-center space-y-3 shadow-sm">
-              <Train className="w-10 h-10 text-emerald-600 mx-auto" />
-              <h3 className="text-lg font-black text-slate-900">Vande Bharat Express (Train #20977)</h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Daily superfast train from New Delhi / Gurgaon to Jaipur with complimentary breakfast and tea.
-              </p>
-              <button
-                onClick={() =>
-                  onBookItem(
-                    {
-                      id: "tr-501",
-                      airline: "Vande Bharat Express",
-                      fromCity: "New Delhi (NDLS)",
-                      toCity: "Jaipur Junction (JP)",
-                      departureTime: "06:20",
-                      arrivalTime: "10:15",
-                      priceINR: 1450
-                    },
-                    "train"
-                  )
-                }
-                className="px-8 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black uppercase shadow-lg shadow-emerald-600/25"
+          {/* TRAINS LIST */}
+          {type === "trains" &&
+            TRAINS_DATABASE.map((train) => (
+              <div
+                key={train.id}
+                className="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-6 space-y-4 shadow-sm hover:shadow-md transition-all"
               >
-                BOOK CHAIR CAR &bull; ₹1,450
-              </button>
-            </div>
-          )}
+                {/* Train Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">
+                      <Train className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base font-black text-slate-900">{train.trainName}</h3>
+                        <span className="font-mono text-xs font-bold text-slate-500">#{train.trainNumber}</span>
+                      </div>
+                      <span className="text-[11px] text-slate-500 font-medium">Runs: {train.runningDays}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
+                      ✓ {train.onTimeScore}
+                    </span>
+                    {train.cateringIncluded && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-black uppercase">
+                        Meals Included
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Timing Bar */}
+                <div className="flex items-center justify-between bg-slate-50 p-3.5 rounded-2xl">
+                  <div>
+                    <span className="text-lg font-black text-slate-900">{train.departureTime}</span>
+                    <span className="text-xs text-slate-500 block truncate max-w-[140px] sm:max-w-none">{train.fromStation}</span>
+                  </div>
+
+                  <div className="text-center px-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">{train.duration}</span>
+                    <div className="w-20 sm:w-32 h-0.5 bg-slate-300 relative my-1">
+                      <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-emerald-600" />
+                    </div>
+                    <span className="text-[10px] text-emerald-700 font-bold">Fast Superfast Express</span>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-lg font-black text-slate-900">{train.arrivalTime}</span>
+                    <span className="text-xs text-slate-500 block truncate max-w-[140px] sm:max-w-none">{train.toStation}</span>
+                  </div>
+                </div>
+
+                {/* Coach Classes Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+                  {train.classes.map((cls) => (
+                    <div
+                      key={cls.code}
+                      className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/20 transition-all flex items-center justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-black text-slate-900">{cls.name}</span>
+                          <span className="text-[10px] font-mono text-slate-400">({cls.code})</span>
+                        </div>
+                        <span className="text-xs font-bold text-emerald-700">{cls.availability}</span>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="text-sm font-black text-slate-900">{formatPrice(cls.priceINR)}</div>
+                        <button
+                          onClick={() =>
+                            onBookItem(
+                              {
+                                id: `${train.id}-${cls.code}`,
+                                itemTitle: `${train.trainName} (${train.trainNumber})`,
+                                subtitle: `${train.fromStation} → ${train.toStation} (${cls.name})`,
+                                finalPrice: cls.priceINR,
+                                priceINR: cls.priceINR,
+                                date: "Sep 15, 2026",
+                                terminal: `Coach ${cls.code} &bull; Departs ${train.departureTime}`,
+                                coachClass: cls.name
+                              },
+                              "train"
+                            )
+                          }
+                          className="mt-1 px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-black uppercase shadow-sm transition-all"
+                        >
+                          Book Now
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </div>

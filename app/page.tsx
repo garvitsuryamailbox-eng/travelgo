@@ -1,46 +1,69 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
-import AirportLivePulse from "../components/AirportLivePulse";
 import PassengerAssuranceBanner from "../components/PassengerAssuranceBanner";
 import HeroBookingWidget from "../components/HeroBookingWidget";
 import SearchResults from "../components/SearchResults";
-import WikiDestinationExplorer from "../components/WikiDestinationExplorer";
+import CityGuidesExplorer from "../components/CityGuidesExplorer";
 import TrendingDestinations from "../components/TrendingDestinations";
 import OffersBanner from "../components/OffersBanner";
 import TripConciergeModal from "../components/TripConciergeModal";
 import MyBookingsDrawer from "../components/MyBookingsDrawer";
 import BookingModal from "../components/BookingModal";
 import AuthModal from "../components/AuthModal";
+import PrintableTicketModal from "../components/PrintableTicketModal";
+import ToastContainer, { ToastMessage } from "../components/ToastNotification";
 import Footer from "../components/Footer";
+import TripPlannerCard from "../components/TripPlannerCard";
+import BudgetDiscovery from "../components/BudgetDiscovery";
+import CompleteTripCard from "../components/CompleteTripCard";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<string>("flights");
   const [currency, setCurrency] = useState<"INR" | "USD">("INR");
-  const [user, setUser] = useState<{ name: string; loggedIn: boolean } | null>({
+  const [user, setUser] = useState<{ name: string; loggedIn: boolean; email?: string } | null>({
     name: "Garvit Surya",
+    email: "garvit@travelgo.in",
     loggedIn: true
   });
+
+  // Toasts State
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const showToast = (toast: { type: "success" | "info" | "error"; title: string; message?: string }) => {
+    const id = `toast-${Date.now()}-${Math.random()}`;
+    setToasts((prev) => [...prev, { id, ...toast }]);
+  };
+
+  const dismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   // Modals state
   const [bookingsDrawerOpen, setBookingsDrawerOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [conciergeModalOpen, setConciergeModalOpen] = useState(false);
-  const [selectedWikiDest, setSelectedWikiDest] = useState<string>("gurgaon");
+  const [selectedCityGuide, setSelectedCityGuide] = useState<string>("gurgaon");
+
+  // Printable E-Ticket Modal State
+  const [printableBooking, setPrintableBooking] = useState<any>(null);
 
   // Search parameters and results
   const [searchParams, setSearchParams] = useState<any>({
     type: "flights",
     fromCity: { code: "BOM", city: "Mumbai", airport: "Chhatrapati Shivaji Maharaj Intl (T2)" },
     toCity: { code: "DEL", city: "New Delhi / Gurgaon NCR", airport: "Indira Gandhi Intl (Terminal 3)" },
-    departureDate: "2026-09-15",
-    returnDate: "2026-09-20",
+    departureDate: "2026-09-24",
+    returnDate: "2026-09-28",
     travelersCount: 1,
     cabinClass: "Economy",
     hotelCity: "Gurgaon (DLF Cyber City)",
     cabType: "Airport Transfer"
   });
+
+  // Whether search results are visible (only after user hits Search)
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   // Booking Checkout state
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
@@ -48,54 +71,42 @@ export default function Home() {
   const [bookingType, setBookingType] = useState<"flight" | "hotel" | "cab" | "package" | "train">("flight");
   const [appliedPromo, setAppliedPromo] = useState<string>("TRAVELGO500");
 
-  // User Bookings state (Persisted in localStorage)
+  // User Bookings state (Persisted in data/bookings.json + localStorage)
   const [bookings, setBookings] = useState<any[]>([]);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("travelgo_user_bookings");
-      if (saved) {
-        setBookings(JSON.parse(saved));
-      } else {
-        const initial = [
-          {
-            id: "bk-sample-1",
-            pnr: "TG829410",
-            type: "hotel",
-            itemTitle: "The Oberoi, Gurgaon",
-            subtitle: "DLF Phase 5, Cyber City (2 Nights)",
-            date: "Sep 15, 2026",
-            travelerName: "Garvit Surya",
-            email: "garvit@travelgo.in",
-            phone: "+91 98765 43210",
-            finalPrice: 16500,
-            currency: "INR",
-            status: "CONFIRMED",
-            bookingRef: "ht-201",
-            terminal: "12 mins to IGI T3 Airport",
-            refundShield: true,
-            createdAt: new Date().toISOString()
+    async function loadBookings() {
+      try {
+        const res = await fetch("/api/bookings");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.bookings) && data.bookings.length > 0) {
+            setBookings(data.bookings);
+            localStorage.setItem("travelgo_user_bookings", JSON.stringify(data.bookings));
+            return;
           }
-        ];
-        setBookings(initial);
-        localStorage.setItem("travelgo_user_bookings", JSON.stringify(initial));
+        }
+      } catch (err) {
+        console.error("Failed to load from /api/bookings, falling back to localStorage", err);
       }
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
 
-  const saveBookings = (newBookings: any[]) => {
-    setBookings(newBookings);
-    try {
-      localStorage.setItem("travelgo_user_bookings", JSON.stringify(newBookings));
-    } catch (e) {
-      console.error(e);
+      // Fallback to localStorage if API call fails
+      try {
+        const saved = localStorage.getItem("travelgo_user_bookings");
+        if (saved) {
+          setBookings(JSON.parse(saved));
+        }
+      } catch (e) {
+        console.error(e);
+      }
     }
-  };
+
+    loadBookings();
+  }, []);
 
   const handleSearch = (params: any) => {
     setSearchParams(params);
+    setSearchPerformed(true);
     const resultsElement = document.getElementById("search-results-section");
     if (resultsElement) {
       resultsElement.scrollIntoView({ behavior: "smooth" });
@@ -108,25 +119,68 @@ export default function Home() {
     setCheckoutModalOpen(true);
   };
 
-  const handleBookingSuccess = (newBooking: any) => {
+  const handleBookingSuccess = async (newBooking: any) => {
     const updated = [newBooking, ...bookings];
-    saveBookings(updated);
-  };
+    setBookings(updated);
 
-  const handleCancelBooking = (bookingId: string) => {
-    const updated = bookings.filter((b) => b.id !== bookingId);
-    saveBookings(updated);
-  };
+    showToast({
+      type: "success",
+      title: "Demo Booking Confirmed!",
+      message: `PNR ${newBooking.pnr} generated for ${newBooking.itemTitle}. (This is a demo — no real booking was made.)`
+    });
 
-  const handleOpenWiki = (destId = "gurgaon") => {
-    setSelectedWikiDest(destId);
-    const wikiElement = document.getElementById("wiki-destination-hub");
-    if (wikiElement) {
-      wikiElement.scrollIntoView({ behavior: "smooth" });
+    try {
+      localStorage.setItem("travelgo_user_bookings", JSON.stringify(updated));
+      await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBooking)
+      });
+    } catch (e) {
+      console.error("Failed to persist booking to /api/bookings", e);
     }
   };
 
-  const handleQuickBookFromWiki = (service: "hotels" | "cabs" | "flights", cityName: string) => {
+  const handleCancelBooking = async (bookingId: string) => {
+    const updated = bookings.filter((b) => b.id !== bookingId);
+    setBookings(updated);
+    try {
+      localStorage.setItem("travelgo_user_bookings", JSON.stringify(updated));
+      await fetch(`/api/bookings?id=${bookingId}`, {
+        method: "DELETE"
+      });
+    } catch (e) {
+      console.error("Failed to cancel booking via /api/bookings", e);
+    }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    showToast({
+      type: "info",
+      title: "Logged Out Successfully",
+      message: "You have been safely signed out from TravelGo."
+    });
+  };
+
+  const handleLoginSuccess = (userData: { name: string; loggedIn: boolean; email: string }) => {
+    setUser(userData);
+    showToast({
+      type: "success",
+      title: "Welcome Back, " + userData.name.split(" ")[0] + "!",
+      message: "Your trip planning dashboard is ready."
+    });
+  };
+
+  const handleOpenCityGuide = (destId = "gurgaon") => {
+    setSelectedCityGuide(destId);
+    const guideElement = document.getElementById("city-guides-hub");
+    if (guideElement) {
+      guideElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleQuickBookFromGuide = (service: "hotels" | "cabs" | "flights", cityName: string) => {
     setActiveTab(service);
     setSearchParams({
       ...searchParams,
@@ -137,15 +191,28 @@ export default function Home() {
     window.scrollTo({ top: 120, behavior: "smooth" });
   };
 
+  const scrollToPlanner = () => {
+    const el = document.getElementById("trip-planner");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToSearch = () => {
+    const el = document.getElementById("booking-search-widget");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#f4f7fa] text-slate-900 selection:bg-blue-600 selection:text-white">
-      {/* Navigation Bar */}
+    <div className="min-h-screen bg-[#f2f5f8] text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
+      {/* Toast Notification Layer */}
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+
+      {/* ── 1. NAVBAR ── */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenBookings={() => setBookingsDrawerOpen(true)}
         bookingCount={bookings.length}
-        onOpenWiki={handleOpenWiki}
+        onOpenWiki={handleOpenCityGuide}
         currency={currency}
         setCurrency={setCurrency}
         onOpenAuth={() => setAuthModalOpen(true)}
@@ -153,59 +220,135 @@ export default function Home() {
         onOpenConcierge={() => setConciergeModalOpen(true)}
       />
 
-      {/* Slim Live Airport Pulse */}
-      <AirportLivePulse />
+      <main className="flex-1">
 
-      {/* Clean 4-Pillar Trust Strip */}
-      <PassengerAssuranceBanner />
+        {/* ── 2. HERO — Planning-first ── */}
+        <section className="relative bg-[#051334] text-white overflow-hidden">
+          {/* Background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#051334] via-[#08204a] to-[#0a2d5e] opacity-100" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,140,255,0.15),transparent_60%)]" />
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#f2f5f8] to-transparent" />
 
-      <main className="flex-1 space-y-4">
-        {/* Clean Hero Search Bar */}
-        <HeroBookingWidget
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          onSearch={handleSearch}
-          onOpenWiki={handleOpenWiki}
-          onOpenConcierge={() => setConciergeModalOpen(true)}
-        />
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 lg:py-24 text-center">
+            {/* Demo badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              Portfolio Prototype · Demo Prices Only
+            </div>
 
-        {/* Clean Search Results */}
-        <SearchResults
-          searchParams={searchParams}
-          onBookItem={handleBookItem}
-          currency={currency}
-          onOpenWiki={handleOpenWiki}
-        />
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-5">
+              Your Next Journey
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-400">
+                Starts With a Plan
+              </span>
+            </h1>
 
-        {/* Magazine-Style Destination Guide */}
-        <WikiDestinationExplorer
-          selectedDestId={selectedWikiDest}
-          onQuickBook={handleQuickBookFromWiki}
-        />
+            <p className="text-base sm:text-lg text-slate-300 font-medium max-w-2xl mx-auto mb-8 leading-relaxed">
+              Plan your trip, understand the real cost, and explore everything before you book.
+              <br />
+              <span className="text-sky-400 font-bold">Know the trip. Know the cost. Then book.</span>
+            </p>
 
-        {/* Featured Destinations */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                id="hero-plan-trip-btn"
+                onClick={scrollToPlanner}
+                className="flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-400 hover:to-indigo-400 text-white font-black text-sm shadow-xl shadow-blue-500/30 active:scale-95 transition-all"
+              >
+                🗺️ Plan My Trip
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 3. SEARCH WIDGET ── */}
+        <div id="booking-search-widget" className="bg-white border-y border-slate-200 py-2">
+          <HeroBookingWidget
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onSearch={handleSearch}
+            onOpenWiki={handleOpenCityGuide}
+            onOpenConcierge={() => setConciergeModalOpen(true)}
+          />
+        </div>
+
+
+
+        {/* ── 5. SEARCH RESULTS (only shown after search) ── */}
+        {searchPerformed && (
+          <SearchResults
+            searchParams={searchParams}
+            onBookItem={handleBookItem}
+            currency={currency}
+            onOpenWiki={handleOpenCityGuide}
+          />
+        )}
+
+        {/* ── 6. TRIP PLANNER ── */}
+        <section id="trip-planner-section" className="py-8 max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="mb-6 text-center">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">
+              <span>🗺️ PLAN YOUR TRIP</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+              Where Do You Want to Go?
+            </h2>
+          </div>
+          <TripPlannerCard
+            onSearch={handleSearch}
+            onOpenConcierge={() => setConciergeModalOpen(true)}
+          />
+        </section>
+
+
+
+        {/* ── 8. POPULAR DESTINATIONS ── */}
         <TrendingDestinations
-          onSelectDest={(destId) => handleOpenWiki(destId)}
-          onBookHotel={(cityName) => handleQuickBookFromWiki("hotels", cityName)}
+          onSelectDest={(destId) => handleOpenCityGuide(destId)}
+          onBookHotel={(cityName) => handleQuickBookFromGuide("hotels", cityName)}
         />
 
-        {/* Clean Deals */}
+        {/* ── 9. COMPLETE TRIP IDEAS ── */}
+        <CompleteTripCard
+          onBookFlight={() => {
+            setActiveTab("flights");
+            scrollToSearch();
+          }}
+        />
+
+        {/* ── 10. DEALS & OFFERS ── */}
         <OffersBanner
           onApplyPromoCode={(code) => {
             setAppliedPromo(code);
-            alert(`Code "${code}" applied for checkout!`);
+            showToast({
+              type: "success",
+              title: "Promo Code Selected!",
+              message: `Code "${code}" activated. Demo discount will be shown at checkout.`
+            });
           }}
+        />
+
+        {/* ── 11. CITY GUIDES ── */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="border-t border-slate-200/60 my-4" />
+        </div>
+        <CityGuidesExplorer
+          selectedDestId={selectedCityGuide}
+          onQuickBook={handleQuickBookFromGuide}
         />
       </main>
 
-      {/* Footer */}
+      {/* ── 12. FOOTER ── */}
       <Footer
-        onOpenWiki={handleOpenWiki}
+        onOpenWiki={handleOpenCityGuide}
         onSetTab={(tab) => {
           setActiveTab(tab);
           window.scrollTo({ top: 120, behavior: "smooth" });
         }}
       />
+
+      {/* ── MODALS ── */}
 
       {/* Slide-over My Bookings */}
       <MyBookingsDrawer
@@ -214,9 +357,11 @@ export default function Home() {
         bookings={bookings}
         onCancelBooking={handleCancelBooking}
         currency={currency}
+        onViewPrintableTicket={(b) => setPrintableBooking(b)}
+        onShowToast={showToast}
       />
 
-      {/* Clean Checkout Modal */}
+      {/* Demo Checkout Modal */}
       <BookingModal
         isOpen={checkoutModalOpen}
         onClose={() => setCheckoutModalOpen(false)}
@@ -225,21 +370,35 @@ export default function Home() {
         currency={currency}
         prefilledPromo={appliedPromo}
         onBookingSuccess={handleBookingSuccess}
+        onShowToast={showToast}
+        onViewPrintableTicket={(b) => setPrintableBooking(b)}
       />
 
-      {/* AI Travel Concierge */}
+      {/* AI Trip Planner Concierge */}
       <TripConciergeModal
         isOpen={conciergeModalOpen}
         onClose={() => setConciergeModalOpen(false)}
-        onTriggerSearch={handleQuickBookFromWiki}
-        onOpenWiki={handleOpenWiki}
+        onTriggerSearch={handleQuickBookFromGuide}
+        onOpenWiki={handleOpenCityGuide}
       />
 
-      {/* Login Modal */}
+      {/* Auth / Profile Modal */}
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        onLoginSuccess={(userData) => setUser(userData)}
+        currentUser={user}
+        bookingCount={bookings.length}
+        onLoginSuccess={handleLoginSuccess}
+        onLogout={handleLogout}
+        onOpenBookings={() => setBookingsDrawerOpen(true)}
+      />
+
+      {/* Demo Printable E-Ticket */}
+      <PrintableTicketModal
+        isOpen={Boolean(printableBooking)}
+        onClose={() => setPrintableBooking(null)}
+        booking={printableBooking}
+        currency={currency}
       />
     </div>
   );

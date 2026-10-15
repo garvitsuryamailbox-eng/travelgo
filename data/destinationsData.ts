@@ -1,4 +1,4 @@
-export interface WikiSection {
+export interface GuideSection {
   id: string;
   title: string;
   content: string;
@@ -6,7 +6,7 @@ export interface WikiSection {
   subsections?: { title: string; content: string }[];
 }
 
-export interface DestinationWiki {
+export interface CityGuideItem {
   id: string;
   slug: string;
   name: string;
@@ -34,7 +34,7 @@ export interface DestinationWiki {
     value: string;
   }[];
   overview: string;
-  sections: WikiSection[];
+  sections: GuideSection[];
   topAttractions: {
     name: string;
     category: string;
@@ -58,7 +58,7 @@ export interface DestinationWiki {
   };
 }
 
-export const DESTINATIONS_DATA: DestinationWiki[] = [
+export const DESTINATIONS_DATA: CityGuideItem[] = [
   {
     id: "gurgaon",
     slug: "gurgaon-gurugram",

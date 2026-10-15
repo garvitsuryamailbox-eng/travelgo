@@ -24,12 +24,12 @@ export const OFFERS_DATA: OfferItem[] = [
   },
   {
     id: "off-2",
-    code: "GURGAONWIKI",
+    code: "GURGAON20",
     title: "Special Cyber City Staycation Deal: Up to 25% OFF",
     description: "Book luxury 5-star hotels in Gurgaon & Delhi NCR with free breakfast and room upgrade.",
     discount: "25% OFF",
     category: "HOTELS",
-    validTill: "Exclusive for Wiki Readers",
+    validTill: "Exclusive for TravelGo Members",
     badge: "POPULAR",
     gradient: "from-purple-600 to-pink-600"
   },

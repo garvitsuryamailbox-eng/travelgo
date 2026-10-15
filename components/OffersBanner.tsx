@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Tag, Copy, Check, Percent, CreditCard, Sparkles, Gift } from "lucide-react";
+import { Tag, Copy, Check, Gift, ArrowRight } from "lucide-react";
 import { OFFERS_DATA, OfferItem } from "../data/offersData";
 
 interface OffersBannerProps {
@@ -14,9 +14,9 @@ export default function OffersBanner({ onApplyPromoCode }: OffersBannerProps) {
 
   const categories: { id: "ALL" | "FLIGHTS" | "HOTELS" | "CABS"; label: string }[] = [
     { id: "ALL", label: "All Offers" },
-    { id: "FLIGHTS", label: "Flight Super Savers" },
-    { id: "HOTELS", label: "Hotel & Staycation Deals" },
-    { id: "CABS", label: "Airport Cab Passes" }
+    { id: "FLIGHTS", label: "Flights" },
+    { id: "HOTELS", label: "Hotels & Stays" },
+    { id: "CABS", label: "Airport Cabs" }
   ];
 
   const handleCopy = (code: string) => {
@@ -36,33 +36,29 @@ export default function OffersBanner({ onApplyPromoCode }: OffersBannerProps) {
   });
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Header with MakeMyTrip Style Category Pills */}
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      {/* MakeMyTrip Offers Header with Horizontal Tabs */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-rose-100 text-rose-600">
-              <Gift className="w-4 h-4" />
-            </span>
-            <span className="text-xs font-black text-rose-600 uppercase tracking-widest">
-              SUPER SAVER DEALS
-            </span>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">
+            <Gift className="w-4 h-4 text-blue-600" />
+            <span>Super Saver Deals</span>
           </div>
-          <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
-            Exclusive Offers &amp; Promo Codes
-          </h3>
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+            Offers For You
+          </h2>
         </div>
 
         {/* Categories Bar */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 md:pb-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                 selectedCategory === cat.id
-                  ? "bg-slate-900 text-white shadow-md shadow-slate-900/20"
-                  : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100"
+                  ? "bg-[#008cff] text-white shadow-md shadow-blue-500/20"
+                  : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
               }`}
             >
               {cat.label}
@@ -78,19 +74,19 @@ export default function OffersBanner({ onApplyPromoCode }: OffersBannerProps) {
           return (
             <div
               key={offer.id}
-              className="bg-white border border-slate-200/90 rounded-3xl p-5 flex flex-col justify-between hover:shadow-xl hover:border-blue-400 transition-all duration-300 group relative overflow-hidden"
+              className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between hover:shadow-lg transition-all duration-200 group relative"
             >
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] font-black uppercase tracking-wider shadow-sm">
+                  <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[11px] font-black uppercase tracking-wider border border-blue-100">
                     {offer.discount}
                   </span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                  <span className="text-[10px] font-medium text-slate-400">
                     {offer.validTill}
                   </span>
                 </div>
 
-                <h4 className="text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+                <h4 className="text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
                   {offer.title}
                 </h4>
 
@@ -99,23 +95,32 @@ export default function OffersBanner({ onApplyPromoCode }: OffersBannerProps) {
                 </p>
               </div>
 
+              {/* Coupon Code Pill & Copy CTA */}
               <div className="pt-4 border-t border-slate-100 mt-4 flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-[9px] uppercase font-bold text-slate-400">Coupon Code</span>
-                  <span className="font-mono text-xs font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200/60 inline-block mt-0.5">
-                    {offer.code}
-                  </span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-dashed border-slate-300">
+                  <Tag className="w-3 h-3 text-slate-500" />
+                  <span className="font-mono text-xs font-black text-slate-800">{offer.code}</span>
                 </div>
 
                 <button
                   onClick={() => handleCopy(offer.code)}
-                  className={`text-xs font-black px-4 py-2 rounded-xl transition-all shadow-sm cursor-pointer ${
+                  className={`flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     isCopied
-                      ? "bg-emerald-600 text-white shadow-emerald-600/30 scale-105"
-                      : "bg-slate-100 text-slate-800 hover:bg-blue-600 hover:text-white"
+                      ? "bg-emerald-500 text-white shadow-sm"
+                      : "text-blue-600 hover:bg-blue-50"
                   }`}
                 >
-                  {isCopied ? "COPIED ✓" : "COPY CODE"}
+                  {isCopied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

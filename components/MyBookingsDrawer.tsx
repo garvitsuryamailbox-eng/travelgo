@@ -42,6 +42,8 @@ interface MyBookingsDrawerProps {
   bookings: BookingItem[];
   onCancelBooking: (id: string) => void;
   currency: "INR" | "USD";
+  onViewPrintableTicket?: (booking: any) => void;
+  onShowToast?: (msg: { type: "success" | "info" | "error"; title: string; message?: string }) => void;
 }
 
 export default function MyBookingsDrawer({
@@ -49,11 +51,11 @@ export default function MyBookingsDrawer({
   onClose,
   bookings,
   onCancelBooking,
-  currency
+  currency,
+  onViewPrintableTicket,
+  onShowToast
 }: MyBookingsDrawerProps) {
   if (!isOpen) return null;
-
-  const [refundAlert, setRefundAlert] = useState<string | null>(null);
 
   const formatPrice = (priceINR: number) => {
     if (currency === "USD") {
@@ -71,8 +73,11 @@ export default function MyBookingsDrawer({
       )
     ) {
       onCancelBooking(b.id);
-      setRefundAlert(`100% Full Refund of ${formatPrice(b.finalPrice)} processed instantly for PNR ${b.pnr}!`);
-      setTimeout(() => setRefundAlert(null), 5000);
+      onShowToast?.({
+        type: "success",
+        title: "Booking Cancelled & Refund Initiated",
+        message: `100% Full Refund of ${formatPrice(b.finalPrice)} processed instantly for PNR ${b.pnr}.`
+      });
     }
   };
 
@@ -98,14 +103,6 @@ export default function MyBookingsDrawer({
             <X className="w-4 h-4" />
           </button>
         </div>
-
-        {/* Refund Toast Alert */}
-        {refundAlert && (
-          <div className="m-4 p-3.5 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold flex items-center gap-2 shadow-md">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-            <span>{refundAlert}</span>
-          </div>
-        )}
 
         {/* Bookings List */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
@@ -156,19 +153,33 @@ export default function MyBookingsDrawer({
                 <div className="flex items-center justify-between pt-1 border-t border-slate-200">
                   <div className="flex items-center gap-1.5">
                     <button
-                      onClick={() => alert(`Sent E-Ticket to WhatsApp at ${b.phone}!`)}
-                      className="p-2 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-xs flex items-center gap-1"
+                      onClick={() =>
+                        onShowToast?.({
+                          type: "success",
+                          title: "Pass Sent to WhatsApp",
+                          message: `Official Boarding Pass sent to ${b.phone || "+91 98765 43210"}.`
+                        })
+                      }
+                      className="p-2 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-xs flex items-center gap-1 transition-colors"
                       title="Send to WhatsApp"
                     >
                       <MessageCircle className="w-3.5 h-3.5 text-emerald-700" />
                       <span>WhatsApp</span>
                     </button>
+
                     <button
-                      onClick={() => alert(`Downloading PDF for PNR ${b.pnr}`)}
-                      className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold"
-                      title="Download PDF"
+                      onClick={() => {
+                        if (onViewPrintableTicket) {
+                          onViewPrintableTicket(b);
+                        } else {
+                          window.print();
+                        }
+                      }}
+                      className="p-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 text-xs font-bold flex items-center gap-1 transition-colors"
+                      title="View / Print Boarding Pass"
                     >
                       <Download className="w-3.5 h-3.5" />
+                      <span>View Pass</span>
                     </button>
                   </div>
 
@@ -177,7 +188,7 @@ export default function MyBookingsDrawer({
                     className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-colors"
                   >
                     <Zap className="w-3.5 h-3.5" />
-                    <span>Cancel &amp; Refund</span>
+                    <span>Cancel</span>
                   </button>
                 </div>
               </div>

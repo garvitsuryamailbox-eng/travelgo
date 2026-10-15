@@ -580,3 +580,107 @@ export const PACKAGES_DATABASE: PackageItem[] = [
     dedicatedConcierge: true
   }
 ];
+
+export interface TrainItem {
+  id: string;
+  trainName: string;
+  trainNumber: string;
+  fromStation: string;
+  toStation: string;
+  departureTime: string;
+  arrivalTime: string;
+  duration: string;
+  runningDays: string;
+  classes: {
+    code: "CC" | "EC" | "3A" | "2A" | "1A";
+    name: string;
+    priceINR: number;
+    availability: string;
+    status: "AVAILABLE" | "RAC" | "WL";
+  }[];
+  cateringIncluded: boolean;
+  onTimeScore: string;
+  pantryAvailable: boolean;
+  cleanlinessRating: number;
+}
+
+export const TRAINS_DATABASE: TrainItem[] = [
+  {
+    id: "tr-20977",
+    trainName: "Vande Bharat Express",
+    trainNumber: "20977",
+    fromStation: "Delhi Cantt (DEC) / Gurgaon (GGN)",
+    toStation: "Jaipur Junction (JP)",
+    departureTime: "06:40",
+    arrivalTime: "10:35",
+    duration: "3h 55m",
+    runningDays: "Mon, Tue, Thu, Fri, Sat, Sun (Except Wed)",
+    classes: [
+      { code: "CC", name: "AC Chair Car", priceINR: 1045, availability: "AVL 84", status: "AVAILABLE" },
+      { code: "EC", name: "Executive Chair Car", priceINR: 2045, availability: "AVL 18", status: "AVAILABLE" }
+    ],
+    cateringIncluded: true,
+    onTimeScore: "98% Punctual",
+    pantryAvailable: true,
+    cleanlinessRating: 4.9
+  },
+  {
+    id: "tr-12005",
+    trainName: "New Delhi - Kalka Shatabdi",
+    trainNumber: "12005",
+    fromStation: "New Delhi (NDLS)",
+    toStation: "Chandigarh (CDG)",
+    departureTime: "17:15",
+    arrivalTime: "20:40",
+    duration: "3h 25m",
+    runningDays: "Daily",
+    classes: [
+      { code: "CC", name: "AC Chair Car", priceINR: 965, availability: "AVL 112", status: "AVAILABLE" },
+      { code: "EC", name: "Executive Chair Car", priceINR: 1795, availability: "AVL 24", status: "AVAILABLE" }
+    ],
+    cateringIncluded: true,
+    onTimeScore: "96% Punctual",
+    pantryAvailable: true,
+    cleanlinessRating: 4.8
+  },
+  {
+    id: "tr-22436",
+    trainName: "Vande Bharat Express (Varanasi)",
+    trainNumber: "22436",
+    fromStation: "New Delhi (NDLS)",
+    toStation: "Varanasi Junction (BSB)",
+    departureTime: "06:00",
+    arrivalTime: "14:00",
+    duration: "8h 00m",
+    runningDays: "Tue, Wed, Fri, Sat, Sun",
+    classes: [
+      { code: "CC", name: "AC Chair Car", priceINR: 1750, availability: "AVL 46", status: "AVAILABLE" },
+      { code: "EC", name: "Executive Chair Car", priceINR: 3300, availability: "AVL 12", status: "AVAILABLE" }
+    ],
+    cateringIncluded: true,
+    onTimeScore: "99% Punctual",
+    pantryAvailable: true,
+    cleanlinessRating: 4.95
+  },
+  {
+    id: "tr-12952",
+    trainName: "Mumbai Rajdhani Express",
+    trainNumber: "12952",
+    fromStation: "New Delhi (NDLS)",
+    toStation: "Mumbai Central (MMCT)",
+    departureTime: "16:55",
+    arrivalTime: "08:35 (+1 Day)",
+    duration: "15h 40m",
+    runningDays: "Daily (Superfast Tejas Rake)",
+    classes: [
+      { code: "3A", name: "3 Tier AC", priceINR: 2480, availability: "AVL 68", status: "AVAILABLE" },
+      { code: "2A", name: "2 Tier AC", priceINR: 3590, availability: "AVL 28", status: "AVAILABLE" },
+      { code: "1A", name: "1st Class AC", priceINR: 5200, availability: "AVL 8", status: "AVAILABLE" }
+    ],
+    cateringIncluded: true,
+    onTimeScore: "97% Punctual",
+    pantryAvailable: true,
+    cleanlinessRating: 4.9
+  }
+];
+

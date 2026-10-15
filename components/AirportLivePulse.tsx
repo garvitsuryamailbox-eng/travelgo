@@ -15,7 +15,11 @@ import {
   Sparkles
 } from "lucide-react";
 
-export default function AirportLivePulse() {
+interface AirportLivePulseProps {
+  onOpenWiki?: () => void;
+}
+
+export default function AirportLivePulse({ onOpenWiki }: AirportLivePulseProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (

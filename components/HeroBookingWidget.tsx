@@ -16,12 +16,14 @@ import {
   Sparkles,
   MapPin,
   ShieldCheck,
-  Zap,
-  Info,
   Home as HomeIcon,
   Bus,
   Shield,
-  CreditCard
+  Clock,
+  Compass,
+  Plus,
+  Minus,
+  Check
 } from "lucide-react";
 import { POPULAR_CITIES, CityOption } from "../data/bookingData";
 
@@ -37,14 +39,15 @@ export default function HeroBookingWidget({
   activeTab,
   setActiveTab,
   onSearch,
-  onOpenWiki
+  onOpenWiki,
+  onOpenConcierge
 }: HeroBookingWidgetProps) {
   // Flight state
-  const [tripType, setTripType] = useState<"one-way" | "round-trip">("one-way");
+  const [tripType, setTripType] = useState<"one-way" | "round-trip" | "multi-city">("one-way");
   const [fromCity, setFromCity] = useState<CityOption>(POPULAR_CITIES[1]); // Mumbai
-  const [toCity, setToCity] = useState<CityOption>(POPULAR_CITIES[0]); // Delhi / Gurgaon NCR
-  const [departureDate, setDepartureDate] = useState("2026-09-15");
-  const [returnDate, setReturnDate] = useState("2026-09-20");
+  const [toCity, setToCity] = useState<CityOption>(POPULAR_CITIES[0]); // Delhi
+  const [departureDate, setDepartureDate] = useState("2026-09-24");
+  const [returnDate, setReturnDate] = useState("2026-09-28");
   const [travelersCount, setTravelersCount] = useState(1);
   const [cabinClass, setCabinClass] = useState<"Economy" | "Premium Economy" | "Business">("Economy");
   const [specialFare, setSpecialFare] = useState("Regular");
@@ -54,21 +57,42 @@ export default function HeroBookingWidget({
   const [showToDropdown, setShowToDropdown] = useState(false);
   const [showTravelerDropdown, setShowTravelerDropdown] = useState(false);
 
+  // Search filter inside dropdowns
+  const [searchFromFilter, setSearchFromFilter] = useState("");
+  const [searchToFilter, setSearchToFilter] = useState("");
+
   // Hotel state
-  const [hotelCity, setHotelCity] = useState("Gurgaon (DLF Cyber City & Golf Course Rd)");
-  const [checkInDate, setCheckInDate] = useState("2026-09-15");
-  const [checkOutDate, setCheckOutDate] = useState("2026-09-18");
-  const [hotelGuests, setHotelGuests] = useState("2 Guests, 1 Room");
+  const [hotelCity, setHotelCity] = useState("Delhi NCR & Gurgaon");
+  const [checkInDate, setCheckInDate] = useState("2026-09-24");
+  const [checkOutDate, setCheckOutDate] = useState("2026-09-26");
+  const [hotelRooms, setHotelRooms] = useState(1);
+  const [hotelAdults, setHotelAdults] = useState(2);
+  const [showHotelGuestDropdown, setShowHotelGuestDropdown] = useState(false);
+
+  // Train state
+  const [trainFrom, setTrainFrom] = useState("New Delhi (NDLS)");
+  const [trainTo, setTrainTo] = useState("Jaipur (JP)");
+  const [trainDate, setTrainDate] = useState("2026-09-24");
+  const [trainClass, setTrainClass] = useState("Executive Chair Car (EC)");
 
   // Cab state
   const [cabType, setCabType] = useState<"Airport Transfer" | "Outstation" | "Hourly Rental">("Airport Transfer");
-  const [cabPickup, setCabPickup] = useState("IGI Airport (DEL) Terminal 3");
-  const [cabDrop, setCabDrop] = useState("DLF CyberHub, Gurgaon");
+  const [cabPickup, setCabPickup] = useState("IGI Airport Terminal 3, Delhi");
+  const [cabDrop, setCabDrop] = useState("CyberHub / DLF Cyber City, Gurgaon");
+  const [cabDate, setCabDate] = useState("2026-09-24");
 
   // Holiday state
-  const [packageDest, setPackageDest] = useState("Golden Triangle: Delhi, Gurgaon & Jaipur");
+  const [packageDest, setPackageDest] = useState("Goa Beach & Luxury Resort (4N/5D)");
 
-  const handleSwapCities = () => {
+  // Homestays state
+  const [homestayLocation, setHomestayLocation] = useState("Goa Private Pool Villa");
+
+  // Buses state
+  const [busFrom, setBusFrom] = useState("Delhi (ISBT Kashmiri Gate)");
+  const [busTo, setBusTo] = useState("Manali / Shimla (Volvo AC)");
+
+  const handleSwapCities = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const temp = fromCity;
     setFromCity(toCity);
     setToCity(temp);
@@ -80,14 +104,17 @@ export default function HeroBookingWidget({
       fromCity,
       toCity,
       departureDate,
-      returnDate,
+      returnDate: tripType === "round-trip" ? returnDate : null,
       travelersCount,
       cabinClass,
       specialFare,
       hotelCity,
       checkInDate,
       checkOutDate,
-      hotelGuests,
+      hotelGuests: `${hotelAdults} Adults, ${hotelRooms} Room`,
+      trainRoute: `${trainFrom} → ${trainTo}`,
+      trainDate,
+      trainClass,
       cabType,
       cabPickup,
       cabDrop,
@@ -95,24 +122,24 @@ export default function HeroBookingWidget({
     });
   };
 
-  // 8 MakeMyTrip Core Service Categories
+  // MakeMyTrip Core Service Categories
   const serviceCategories = [
-    { id: "flights", label: "Flights", icon: Plane, color: "text-blue-500", activeBg: "bg-blue-600 text-white" },
-    { id: "hotels", label: "Hotels", icon: Building2, color: "text-rose-500", activeBg: "bg-rose-500 text-white" },
-    { id: "homestays", label: "Homestays & Villas", icon: HomeIcon, color: "text-amber-500", activeBg: "bg-amber-500 text-white" },
-    { id: "packages", label: "Holiday Packages", icon: Palmtree, color: "text-teal-500", activeBg: "bg-teal-500 text-white" },
-    { id: "trains", label: "Trains", icon: Train, color: "text-emerald-600", activeBg: "bg-emerald-600 text-white" },
-    { id: "buses", label: "Buses", icon: Bus, color: "text-orange-500", activeBg: "bg-orange-500 text-white" },
-    { id: "cabs", label: "Airport Cabs", icon: Car, color: "text-yellow-500", activeBg: "bg-yellow-500 text-white" },
-    { id: "insurance", label: "Travel Insurance", icon: Shield, color: "text-indigo-500", activeBg: "bg-indigo-500 text-white" }
+    { id: "flights", label: "Flights", icon: Plane },
+    { id: "hotels", label: "Hotels", icon: Building2 },
+    { id: "homestays", label: "Homestays & Villas", icon: HomeIcon },
+    { id: "packages", label: "Holiday Packages", icon: Palmtree },
+    { id: "trains", label: "Trains", icon: Train },
+    { id: "buses", label: "Buses", icon: Bus },
+    { id: "cabs", label: "Airport Cabs", icon: Car },
+    { id: "insurance", label: "Travel Insurance", icon: Shield }
   ];
 
   const specialFareOptions = [
-    { id: "Regular", label: "Regular Fares", desc: "Standard baggage & refunds" },
-    { id: "ArmedForces", label: "Armed Forces", badge: "Up to ₹600 OFF", desc: "Special defence discount" },
-    { id: "Student", label: "Student Fares", badge: "Extra 10kg Baggage", desc: "For students 12+ years" },
-    { id: "Senior", label: "Senior Citizen", badge: "Priority Boarding", desc: "60+ years travellers" },
-    { id: "Doctors", label: "Doctors & Nurses", badge: "Special Care", desc: "Medical heroes concession" }
+    { id: "Regular", label: "Regular", desc: "Regular Fares" },
+    { id: "Student", label: "Student", badge: "Extra 10kg Baggage", desc: "For students 12+ yrs" },
+    { id: "Senior", label: "Senior Citizen", badge: "Up to ₹600 OFF", desc: "For 60+ yrs" },
+    { id: "ArmedForces", label: "Armed Forces", badge: "Special Fare", desc: "For Defence Personnel" },
+    { id: "Doctors", label: "Doctor and Nurses", badge: "Special Care", desc: "Medical professionals" }
   ];
 
   const popularRoutes = [
@@ -133,82 +160,44 @@ export default function HeroBookingWidget({
       const dayName = dayNames[date.getDay()];
       return { dayNum, monthYear: `${month}'${year}`, dayName };
     } catch {
-      return { dayNum: 15, monthYear: "Sep'26", dayName: "Tuesday" };
+      return { dayNum: 24, monthYear: "Sep'26", dayName: "Thursday" };
     }
   };
 
   const depDateInfo = formatDateDisplay(departureDate);
   const retDateInfo = formatDateDisplay(returnDate);
 
+  const filteredFromCities = POPULAR_CITIES.filter((c) =>
+    c.city.toLowerCase().includes(searchFromFilter.toLowerCase()) ||
+    c.code.toLowerCase().includes(searchFromFilter.toLowerCase()) ||
+    c.airport.toLowerCase().includes(searchFromFilter.toLowerCase())
+  );
+
+  const filteredToCities = POPULAR_CITIES.filter((c) =>
+    c.city.toLowerCase().includes(searchToFilter.toLowerCase()) ||
+    c.code.toLowerCase().includes(searchToFilter.toLowerCase()) ||
+    c.airport.toLowerCase().includes(searchToFilter.toLowerCase())
+  );
+
   return (
     <div className="relative w-full pb-16">
-      {/* Royal Navy MakeMyTrip Hero Canvas */}
-      <div className="bg-gradient-to-b from-[#051329] via-[#08204d] to-[#0c2a66] text-white pt-8 pb-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Ambient Decorative Backdrops */}
-        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 left-10 w-96 h-96 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto text-center space-y-3 relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-cyan-300 text-xs font-black uppercase tracking-wider backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
-            <span>100% Upfront Transparent Fares &bull; ₹0 Convenience Fee</span>
+      {/* Elevated Pure White Main Search Card */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-20">
+        <div className="bg-white rounded-3xl shadow-2xl border border-slate-200/90 p-6 sm:p-8 relative">
+          
+          <div className="mb-6">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">
+              <span>✈️ BOOK YOUR TRAVEL</span>
+            </div>
+            <h2 className="text-2xl font-black text-slate-900">
+              Search {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+            </h2>
           </div>
-
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
-            Book Flights, Luxury Stays &amp; Explore{" "}
-            <span className="bg-gradient-to-r from-cyan-300 via-sky-200 to-white bg-clip-text text-transparent">
-              Gurgaon Millennium City
-            </span>
-          </h1>
-
-          <p className="text-xs sm:text-sm text-blue-200/90 max-w-2xl mx-auto font-medium">
-            Live IGI Terminal 3 queue radar, verified CyberHub commute times, and 2-minute instant UPI refund guarantee.
-          </p>
-        </div>
-      </div>
-
-      {/* Floating Iconic MakeMyTrip Elevated Search Pod */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-20">
-        {/* Floating Category Navigation Bar (MakeMyTrip 8-Service Pill Row) */}
-        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200 p-2 mb-2 flex items-center justify-between overflow-x-auto no-scrollbar gap-2 max-w-5xl mx-auto">
-          <div className="flex items-center gap-1 sm:gap-2">
-            {serviceCategories.map((cat) => {
-              const Icon = cat.icon;
-              const isSelected = activeTab === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveTab(cat.id === "homestays" || cat.id === "buses" || cat.id === "insurance" ? "flights" : cat.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-black transition-all whitespace-nowrap group ${
-                    isSelected
-                      ? "bg-slate-900 text-white shadow-md shadow-slate-900/20 scale-100"
-                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                  }`}
-                >
-                  <Icon className={`w-4 h-4 ${isSelected ? "text-white" : cat.color} transition-transform group-hover:scale-110`} />
-                  <span>{cat.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Quick Wiki Shortcut Badge */}
-          <button
-            onClick={() => onOpenWiki("gurgaon")}
-            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-800 text-xs font-extrabold hover:bg-cyan-100 transition-colors whitespace-nowrap shrink-0"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
-            <span>Gurgaon Wiki Hub</span>
-          </button>
-        </div>
-
-        {/* Main Search Container */}
-        <div className="bg-white rounded-3xl shadow-2xl shadow-slate-900/15 border border-slate-200 p-6 sm:p-8 relative">
           {/* FLIGHTS SEARCH CARD */}
-          {(activeTab === "flights" || activeTab === "homestays" || activeTab === "buses" || activeTab === "insurance") && (
+          {activeTab === "flights" && (
             <div className="space-y-6">
               {/* Trip Type Radios & Headline */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600 border-b border-slate-100 pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-700 border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-6">
                   <label className="flex items-center gap-2 cursor-pointer font-bold select-none">
                     <input
@@ -216,9 +205,9 @@ export default function HeroBookingWidget({
                       name="tripType"
                       checked={tripType === "one-way"}
                       onChange={() => setTripType("one-way")}
-                      className="accent-blue-600 w-4 h-4 cursor-pointer"
+                      className="w-4 h-4 accent-[#008cff] cursor-pointer"
                     />
-                    <span className={tripType === "one-way" ? "text-slate-900 font-black text-sm" : "text-slate-500 font-bold text-sm"}>
+                    <span className={tripType === "one-way" ? "text-blue-600 font-extrabold" : "text-slate-700"}>
                       One Way
                     </span>
                   </label>
@@ -229,141 +218,170 @@ export default function HeroBookingWidget({
                       name="tripType"
                       checked={tripType === "round-trip"}
                       onChange={() => setTripType("round-trip")}
-                      className="accent-blue-600 w-4 h-4 cursor-pointer"
+                      className="w-4 h-4 accent-[#008cff] cursor-pointer"
                     />
-                    <span className={tripType === "round-trip" ? "text-slate-900 font-black text-sm" : "text-slate-500 font-bold text-sm"}>
+                    <span className={tripType === "round-trip" ? "text-blue-600 font-extrabold" : "text-slate-700"}>
                       Round Trip
+                    </span>
+                  </label>
+
+                  <label className="flex items-center gap-2 cursor-pointer font-bold select-none">
+                    <input
+                      type="radio"
+                      name="tripType"
+                      checked={tripType === "multi-city"}
+                      onChange={() => setTripType("multi-city")}
+                      className="w-4 h-4 accent-[#008cff] cursor-pointer"
+                    />
+                    <span className={tripType === "multi-city" ? "text-blue-600 font-extrabold" : "text-slate-700"}>
+                      Multi City
                     </span>
                   </label>
                 </div>
 
                 <div className="text-xs text-slate-500 font-medium">
-                  Book Domestic &amp; International Flights &bull; <span className="text-emerald-600 font-bold">100% Upfront Transparent Pricing</span>
+                  Book Domestic and International Flights &bull; <span className="text-emerald-600 font-bold">Compare demo prices</span>
                 </div>
               </div>
 
-              {/* Exact MakeMyTrip 5-Tile Contiguous Grid */}
+              {/* 5-Tile Contiguous MakeMyTrip Search Matrix */}
               <div className="border border-slate-200 rounded-2xl grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white relative shadow-sm">
                 {/* 1. FROM TILE */}
-                <div className="md:col-span-3 p-4 hover:bg-blue-50/40 cursor-pointer transition-all relative group rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
-                  <div
-                    onClick={() => {
-                      setShowFromDropdown(!showFromDropdown);
-                      setShowToDropdown(false);
-                      setShowTravelerDropdown(false);
-                    }}
-                  >
-                    <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                      From
-                    </span>
-                    <div className="text-2xl sm:text-3xl font-black text-slate-900 mt-1 leading-tight tracking-tight">
-                      {fromCity.city}
-                    </div>
-                    <div className="text-xs text-slate-500 truncate mt-1 font-medium">
-                      <span className="font-bold text-blue-600">{fromCity.code}</span>, {fromCity.airport}
-                    </div>
+                <div
+                  onClick={() => {
+                    setShowFromDropdown(!showFromDropdown);
+                    setShowToDropdown(false);
+                    setShowTravelerDropdown(false);
+                  }}
+                  className="md:col-span-3 p-4 hover:bg-blue-50/40 cursor-pointer transition-all relative group rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none"
+                >
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    From
+                  </span>
+                  <div className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight mt-0.5 group-hover:text-blue-600 transition-colors">
+                    {fromCity.city}
                   </div>
+                  <span className="text-xs text-slate-500 font-medium block truncate mt-1">
+                    {fromCity.code}, {fromCity.airport}
+                  </span>
 
-                  {/* City Selection Dropdown */}
+                  {/* From Dropdown */}
                   {showFromDropdown && (
-                    <div className="absolute top-full left-0 mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2.5 z-50 animate-in fade-in zoom-in-95">
-                      <div className="text-[11px] text-slate-400 px-3 py-1 font-bold uppercase tracking-wider">
-                        Select Departure Airport
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute top-full left-0 mt-2 w-84 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 z-50 animate-in fade-in duration-150"
+                    >
+                      <input
+                        type="text"
+                        placeholder="Search city or airport..."
+                        value={searchFromFilter}
+                        onChange={(e) => setSearchFromFilter(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 mb-2"
+                        autoFocus
+                      />
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 px-1">
+                        Popular Airports
                       </div>
-                      {POPULAR_CITIES.map((c) => (
-                        <div
-                          key={c.code}
-                          onClick={() => {
-                            setFromCity(c);
-                            setShowFromDropdown(false);
-                          }}
-                          className="flex items-center justify-between p-3 rounded-xl hover:bg-blue-50 cursor-pointer transition-colors"
-                        >
-                          <div>
-                            <div className="text-xs font-black text-slate-900">{c.city}</div>
-                            <div className="text-[11px] text-slate-500 truncate max-w-[180px]">{c.airport}</div>
+                      <div className="max-h-60 overflow-y-auto divide-y divide-slate-50">
+                        {filteredFromCities.map((c) => (
+                          <div
+                            key={c.code}
+                            onClick={() => {
+                              setFromCity(c);
+                              setShowFromDropdown(false);
+                            }}
+                            className="p-2.5 hover:bg-blue-50 cursor-pointer rounded-xl flex items-center justify-between"
+                          >
+                            <div>
+                              <div className="font-bold text-xs text-slate-900">{c.city}</div>
+                              <div className="text-[10px] text-slate-400 truncate max-w-[190px]">{c.airport}</div>
+                            </div>
+                            <span className="font-mono text-xs font-black text-blue-600">{c.code}</span>
                           </div>
-                          <span className="text-xs font-mono font-black text-blue-600 bg-blue-100 px-2 py-0.5 rounded-md">
-                            {c.code}
-                          </span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
 
-                {/* TWO-WAY SWAP BUTTON (Centered between From & To) */}
+                {/* Swap City Button */}
                 <button
+                  type="button"
                   onClick={handleSwapCities}
-                  className="hidden md:flex absolute left-[25%] top-1/2 -translate-y-1/2 -translate-x-1/2 z-30 w-9 h-9 rounded-full bg-white border border-slate-300 shadow-md text-blue-600 items-center justify-center hover:scale-110 hover:border-blue-500 hover:bg-blue-50 transition-all group"
-                  title="Swap Origin and Destination"
+                  className="hidden md:flex absolute left-[25%] -translate-x-1/2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white border border-slate-300 items-center justify-center text-blue-600 hover:scale-110 hover:border-blue-600 shadow-md z-30 transition-all cursor-pointer"
+                  title="Swap Cities"
                 >
-                  <ArrowLeftRight className="w-4 h-4 transition-transform group-hover:rotate-180 duration-300" />
+                  <ArrowLeftRight className="w-3.5 h-3.5" />
                 </button>
 
                 {/* 2. TO TILE */}
-                <div className="md:col-span-3 p-4 hover:bg-blue-50/40 cursor-pointer transition-all relative group">
-                  <div
-                    onClick={() => {
-                      setShowToDropdown(!showToDropdown);
-                      setShowFromDropdown(false);
-                      setShowTravelerDropdown(false);
-                    }}
-                  >
-                    <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-cyan-600" />
-                      To
-                    </span>
-                    <div className="text-2xl sm:text-3xl font-black text-slate-900 mt-1 leading-tight tracking-tight">
-                      {toCity.city}
-                    </div>
-                    <div className="text-xs text-slate-500 truncate mt-1 font-medium">
-                      <span className="font-bold text-cyan-600">{toCity.code}</span>, {toCity.airport}
-                    </div>
+                <div
+                  onClick={() => {
+                    setShowToDropdown(!showToDropdown);
+                    setShowFromDropdown(false);
+                    setShowTravelerDropdown(false);
+                  }}
+                  className="md:col-span-3 p-4 hover:bg-blue-50/40 cursor-pointer transition-all relative group"
+                >
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    To
+                  </span>
+                  <div className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight mt-0.5 group-hover:text-blue-600 transition-colors">
+                    {toCity.city}
                   </div>
+                  <span className="text-xs text-slate-500 font-medium block truncate mt-1">
+                    {toCity.code}, {toCity.airport}
+                  </span>
 
-                  {/* City Selection Dropdown */}
+                  {/* To Dropdown */}
                   {showToDropdown && (
-                    <div className="absolute top-full left-0 mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2.5 z-50 animate-in fade-in zoom-in-95">
-                      <div className="text-[11px] text-slate-400 px-3 py-1 font-bold uppercase tracking-wider">
-                        Select Destination Airport
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute top-full left-0 mt-2 w-84 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 z-50 animate-in fade-in duration-150"
+                    >
+                      <input
+                        type="text"
+                        placeholder="Search destination airport..."
+                        value={searchToFilter}
+                        onChange={(e) => setSearchToFilter(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-blue-500 mb-2"
+                        autoFocus
+                      />
+                      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 px-1">
+                        Select Destination
                       </div>
-                      {POPULAR_CITIES.map((c) => (
-                        <div
-                          key={c.code}
-                          onClick={() => {
-                            setToCity(c);
-                            setShowToDropdown(false);
-                          }}
-                          className="flex items-center justify-between p-3 rounded-xl hover:bg-blue-50 cursor-pointer transition-colors"
-                        >
-                          <div>
-                            <div className="text-xs font-black text-slate-900">{c.city}</div>
-                            <div className="text-[11px] text-slate-500 truncate max-w-[180px]">{c.airport}</div>
+                      <div className="max-h-60 overflow-y-auto divide-y divide-slate-50">
+                        {filteredToCities.map((c) => (
+                          <div
+                            key={c.code}
+                            onClick={() => {
+                              setToCity(c);
+                              setShowToDropdown(false);
+                            }}
+                            className="p-2.5 hover:bg-blue-50 cursor-pointer rounded-xl flex items-center justify-between"
+                          >
+                            <div>
+                              <div className="font-bold text-xs text-slate-900">{c.city}</div>
+                              <div className="text-[10px] text-slate-400 truncate max-w-[190px]">{c.airport}</div>
+                            </div>
+                            <span className="font-mono text-xs font-black text-blue-600">{c.code}</span>
                           </div>
-                          <span className="text-xs font-mono font-black text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded-md">
-                            {c.code}
-                          </span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
 
-                {/* 3. DEPARTURE TILE */}
-                <div className="md:col-span-2 p-4 hover:bg-blue-50/40 transition-all relative">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                {/* 3. DEPARTURE DATE TILE */}
+                <div className="md:col-span-2 p-4 hover:bg-blue-50/40 cursor-pointer transition-all relative">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
                     Departure
                   </span>
-                  <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
-                      {depDateInfo.dayNum}
-                    </span>
-                    <span className="text-sm font-bold text-slate-700">{depDateInfo.monthYear}</span>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl sm:text-3xl font-black text-slate-900">{depDateInfo.dayNum}</span>
+                    <span className="text-xs font-bold text-slate-800">{depDateInfo.monthYear}</span>
                   </div>
-                  <div className="text-xs text-slate-500 font-medium">{depDateInfo.dayName}</div>
+                  <span className="text-xs text-slate-500 font-medium block mt-1">{depDateInfo.dayName}</span>
                   <input
                     type="date"
                     value={departureDate}
@@ -372,37 +390,18 @@ export default function HeroBookingWidget({
                   />
                 </div>
 
-                {/* 4. RETURN TILE */}
-                <div
-                  className={`md:col-span-2 p-4 transition-all relative ${
-                    tripType === "one-way" ? "bg-slate-50/70" : "hover:bg-blue-50/40"
-                  }`}
-                >
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                {/* 4. RETURN DATE TILE */}
+                <div className="md:col-span-2 p-4 hover:bg-blue-50/40 cursor-pointer transition-all relative">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
                     Return
                   </span>
-                  {tripType === "one-way" ? (
-                    <div
-                      onClick={() => setTripType("round-trip")}
-                      className="cursor-pointer mt-1"
-                    >
-                      <div className="text-xs font-bold text-blue-600 hover:underline">
-                        + Add Return Flight
-                      </div>
-                      <div className="text-[10px] text-emerald-600 font-black mt-0.5">
-                        Save up to ₹1,200
-                      </div>
-                    </div>
-                  ) : (
+                  {tripType === "round-trip" ? (
                     <>
-                      <div className="flex items-baseline gap-1 mt-1">
-                        <span className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
-                          {retDateInfo.dayNum}
-                        </span>
-                        <span className="text-sm font-bold text-slate-700">{retDateInfo.monthYear}</span>
+                      <div className="flex items-baseline gap-1 mt-0.5">
+                        <span className="text-2xl sm:text-3xl font-black text-slate-900">{retDateInfo.dayNum}</span>
+                        <span className="text-xs font-bold text-slate-800">{retDateInfo.monthYear}</span>
                       </div>
-                      <div className="text-xs text-slate-500 font-medium">{retDateInfo.dayName}</div>
+                      <span className="text-xs text-slate-500 font-medium block mt-1">{retDateInfo.dayName}</span>
                       <input
                         type="date"
                         value={returnDate}
@@ -410,103 +409,120 @@ export default function HeroBookingWidget({
                         className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                       />
                     </>
+                  ) : (
+                    <div
+                      onClick={() => setTripType("round-trip")}
+                      className="mt-2 text-xs text-blue-600 font-bold hover:underline"
+                    >
+                      + Add Return Date
+                      <div className="text-[10px] text-emerald-600 font-semibold">Save up to 15%</div>
+                    </div>
                   )}
                 </div>
 
                 {/* 5. TRAVELLERS & CLASS TILE */}
-                <div className="md:col-span-2 p-4 hover:bg-blue-50/40 cursor-pointer transition-all relative rounded-b-2xl md:rounded-r-2xl md:rounded-bl-none">
-                  <div
-                    onClick={() => {
-                      setShowTravelerDropdown(!showTravelerDropdown);
-                      setShowFromDropdown(false);
-                      setShowToDropdown(false);
-                    }}
-                  >
-                    <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                      <Users className="w-3.5 h-3.5 text-blue-600" />
-                      Travellers &amp; Class
+                <div
+                  onClick={() => {
+                    setShowTravelerDropdown(!showTravelerDropdown);
+                    setShowFromDropdown(false);
+                    setShowToDropdown(false);
+                  }}
+                  className="md:col-span-2 p-4 hover:bg-blue-50/40 cursor-pointer transition-all relative rounded-b-2xl md:rounded-r-2xl md:rounded-bl-none"
+                >
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Travellers &amp; Class
+                  </span>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl sm:text-3xl font-black text-slate-900">{travelersCount}</span>
+                    <span className="text-xs font-bold text-slate-800">
+                      {travelersCount > 1 ? "Travellers" : "Adult"}
                     </span>
-                    <div className="flex items-baseline gap-1 mt-1">
-                      <span className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
-                        {travelersCount}
-                      </span>
-                      <span className="text-sm font-bold text-slate-700">
-                        {travelersCount > 1 ? "Travellers" : "Traveller"}
-                      </span>
-                    </div>
-                    <div className="text-xs text-blue-600 font-extrabold truncate">{cabinClass}</div>
                   </div>
+                  <span className="text-xs text-slate-500 font-medium block truncate mt-1">{cabinClass}</span>
 
                   {/* Travellers Dropdown */}
                   {showTravelerDropdown && (
-                    <div className="absolute top-full right-0 mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-2xl p-4 z-50 space-y-4 animate-in fade-in zoom-in-95">
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute top-full right-0 mt-2 w-76 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 animate-in fade-in duration-150 space-y-4"
+                    >
                       <div>
-                        <div className="text-xs font-black text-slate-800 mb-2">Number of Travellers</div>
-                        <div className="grid grid-cols-6 gap-1.5">
-                          {[1, 2, 3, 4, 5, 6].map((num) => (
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-bold text-slate-800">Adults (12+ yrs)</span>
+                          <div className="flex items-center gap-2">
                             <button
-                              key={num}
-                              onClick={() => setTravelersCount(num)}
-                              className={`py-2 rounded-xl text-xs font-black transition-all ${
-                                travelersCount === num
-                                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                              type="button"
+                              onClick={() => setTravelersCount(Math.max(1, travelersCount - 1))}
+                              className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-100"
+                            >
+                              <Minus className="w-3 h-3 text-slate-700" />
+                            </button>
+                            <span className="w-4 text-center font-bold text-xs">{travelersCount}</span>
+                            <button
+                              type="button"
+                              onClick={() => setTravelersCount(Math.min(9, travelersCount + 1))}
+                              className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-100"
+                            >
+                              <Plus className="w-3 h-3 text-slate-700" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-slate-100 pt-3">
+                        <span className="text-xs font-bold text-slate-800 block mb-2">Cabin Class</span>
+                        <div className="grid grid-cols-1 gap-1.5">
+                          {(["Economy", "Premium Economy", "Business"] as const).map((cls) => (
+                            <button
+                              key={cls}
+                              type="button"
+                              onClick={() => setCabinClass(cls)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold text-left transition-all flex items-center justify-between ${
+                                cabinClass === cls
+                                  ? "bg-blue-50 text-blue-700 border border-blue-200"
+                                  : "hover:bg-slate-50 text-slate-700"
                               }`}
                             >
-                              {num}
+                              <span>{cls}</span>
+                              {cabinClass === cls && <Check className="w-3.5 h-3.5 text-blue-600" />}
                             </button>
                           ))}
                         </div>
                       </div>
 
-                      <div>
-                        <div className="text-xs font-black text-slate-800 mb-2">Cabin Class</div>
-                        <div className="space-y-1.5">
-                          {(["Economy", "Premium Economy", "Business"] as const).map((cls) => (
-                            <button
-                              key={cls}
-                              onClick={() => {
-                                setCabinClass(cls);
-                                setShowTravelerDropdown(false);
-                              }}
-                              className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-colors ${
-                                cabinClass === cls
-                                  ? "bg-blue-50 text-blue-600 border border-blue-200"
-                                  : "text-slate-700 hover:bg-slate-100"
-                              }`}
-                            >
-                              <span>{cls}</span>
-                              {cabinClass === cls && <CheckCircle2 className="w-4 h-4 text-blue-600" />}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowTravelerDropdown(false)}
+                        className="w-full py-2 rounded-xl bg-[#008cff] text-white font-bold text-xs uppercase tracking-wider"
+                      >
+                        Apply
+                      </button>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Special Fare Types (MakeMyTrip Signature Row) */}
+              {/* MakeMyTrip Special Fare Row */}
               <div className="pt-2 flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-t border-slate-100">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-black text-slate-500 uppercase tracking-wider">
-                    Select A Fare Type:
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider mr-1">
+                    Select a special fare:
                   </span>
                   {specialFareOptions.map((sf) => (
                     <button
                       key={sf.id}
                       onClick={() => setSpecialFare(sf.id)}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                         specialFare === sf.id
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
-                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                          ? "bg-blue-50 border border-blue-500 text-blue-700 shadow-sm"
+                          : "bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 border border-transparent"
                       }`}
                     >
                       <span>{sf.label}</span>
                       {sf.badge && (
                         <span
-                          className={`text-[10px] font-black px-1.5 py-0.2 rounded ${
-                            specialFare === sf.id ? "bg-white/20 text-white" : "bg-blue-100 text-blue-700"
+                          className={`text-[9px] font-black px-1.5 py-0.2 rounded ${
+                            specialFare === sf.id ? "bg-blue-600 text-white" : "bg-white text-blue-600 border border-blue-200"
                           }`}
                         >
                           {sf.badge}
@@ -516,14 +532,14 @@ export default function HeroBookingWidget({
                   ))}
                 </div>
 
-                <div className="text-xs text-emerald-600 font-black flex items-center gap-1.5">
+                <div className="text-xs text-emerald-600 font-bold flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span>DigiYatra Fast Gate Verified</span>
+                  <span>Free Cancellation Option Available</span>
                 </div>
               </div>
 
-              {/* Popular Routes Quick Bar */}
-              <div className="pt-2 flex items-center gap-2 overflow-x-auto no-scrollbar text-xs text-slate-500">
+              {/* Popular Routes Pill Strip */}
+              <div className="pt-1 flex items-center gap-2 overflow-x-auto no-scrollbar text-xs text-slate-500">
                 <span className="font-bold text-slate-400 uppercase text-[10px] tracking-wider shrink-0">
                   Popular:
                 </span>
@@ -533,12 +549,23 @@ export default function HeroBookingWidget({
                     onClick={() => {
                       setFromCity(rt.fromCityObj);
                       setToCity(rt.toCityObj);
-                      handleExecuteSearch();
+                      setTimeout(() => {
+                        onSearch({
+                          type: "flights",
+                          fromCity: rt.fromCityObj,
+                          toCity: rt.toCityObj,
+                          departureDate,
+                          returnDate: tripType === "round-trip" ? returnDate : null,
+                          travelersCount,
+                          cabinClass,
+                          specialFare,
+                        });
+                      }, 0);
                     }}
-                    className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 text-slate-700 font-bold transition-all whitespace-nowrap flex items-center gap-1.5 shrink-0"
+                    className="px-3 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 text-slate-700 font-medium transition-all whitespace-nowrap flex items-center gap-1.5 shrink-0 cursor-pointer"
                   >
                     <span>{rt.label}</span>
-                    <span className="text-blue-600 font-black">{rt.price}</span>
+                    <span className="text-blue-600 font-bold">{rt.price}</span>
                   </button>
                 ))}
               </div>
@@ -547,71 +574,176 @@ export default function HeroBookingWidget({
 
           {/* HOTELS SEARCH CARD */}
           {activeTab === "hotels" && (
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-              <div className="md:col-span-5">
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-blue-500 transition-all">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                    <Building2 className="w-3.5 h-3.5 text-rose-500" />
-                    City, Location or Hotel Name
+            <div className="space-y-4">
+              <div className="border border-slate-200 rounded-2xl grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white">
+                <div className="md:col-span-5 p-4 hover:bg-blue-50/40 transition-all rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    City, Location or Property
                   </span>
                   <input
                     type="text"
                     value={hotelCity}
                     onChange={(e) => setHotelCity(e.target.value)}
-                    className="bg-transparent text-slate-900 font-black text-lg mt-1 outline-none w-full"
-                    placeholder="e.g. Gurgaon DLF Cyber City, Goa, Jaipur"
+                    className="text-xl sm:text-2xl font-black text-slate-900 outline-none w-full bg-transparent mt-0.5"
+                    placeholder="e.g. Delhi NCR, Goa, Jaipur"
                   />
-                  <div className="text-xs text-emerald-600 font-bold mt-1">
-                    ✓ Verified Commute to CyberHub &amp; Golf Course Rd
-                  </div>
+                  <span className="text-xs text-slate-500 font-medium block truncate mt-1">
+                    India &bull; 5,000+ verified luxury hotels &amp; cyber suites
+                  </span>
                 </div>
-              </div>
 
-              <div className="md:col-span-2">
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-blue-500 transition-all">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-rose-500" />
+                <div className="md:col-span-2 p-4 hover:bg-blue-50/40 transition-all relative">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
                     Check-In
                   </span>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-black text-slate-900">{formatDateDisplay(checkInDate).dayNum}</span>
+                    <span className="text-xs font-bold text-slate-800">{formatDateDisplay(checkInDate).monthYear}</span>
+                  </div>
+                  <span className="text-xs text-slate-500 font-medium block mt-1">{formatDateDisplay(checkInDate).dayName}</span>
                   <input
                     type="date"
                     value={checkInDate}
                     onChange={(e) => setCheckInDate(e.target.value)}
-                    className="bg-transparent text-slate-900 font-black text-sm mt-1 outline-none w-full cursor-pointer"
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                   />
-                  <div className="text-xs text-slate-400 mt-0.5">From 02:00 PM</div>
                 </div>
-              </div>
 
-              <div className="md:col-span-2">
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-blue-500 transition-all">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-rose-500" />
+                <div className="md:col-span-2 p-4 hover:bg-blue-50/40 transition-all relative">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
                     Check-Out
                   </span>
+                  <div className="flex items-baseline gap-1 mt-0.5">
+                    <span className="text-2xl font-black text-slate-900">{formatDateDisplay(checkOutDate).dayNum}</span>
+                    <span className="text-xs font-bold text-slate-800">{formatDateDisplay(checkOutDate).monthYear}</span>
+                  </div>
+                  <span className="text-xs text-slate-500 font-medium block mt-1">{formatDateDisplay(checkOutDate).dayName}</span>
                   <input
                     type="date"
                     value={checkOutDate}
                     onChange={(e) => setCheckOutDate(e.target.value)}
-                    className="bg-transparent text-slate-900 font-black text-sm mt-1 outline-none w-full cursor-pointer"
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                   />
-                  <div className="text-xs text-slate-400 mt-0.5">Until 12:00 PM</div>
+                </div>
+
+                <div
+                  onClick={() => setShowHotelGuestDropdown(!showHotelGuestDropdown)}
+                  className="md:col-span-3 p-4 hover:bg-blue-50/40 transition-all relative cursor-pointer rounded-b-2xl md:rounded-r-2xl md:rounded-bl-none"
+                >
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Rooms &amp; Guests
+                  </span>
+                  <div className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5">
+                    {hotelRooms} Room, {hotelAdults} Adults
+                  </div>
+                  <span className="text-xs text-slate-500 font-medium block mt-1">Free breakfast &bull; Flexible check-in</span>
+
+                  {showHotelGuestDropdown && (
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute top-full right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 animate-in fade-in space-y-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-700">Rooms</span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setHotelRooms(Math.max(1, hotelRooms - 1))}
+                            className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-100"
+                          >
+                            -
+                          </button>
+                          <span className="w-4 text-center font-bold text-xs">{hotelRooms}</span>
+                          <button
+                            onClick={() => setHotelRooms(Math.min(5, hotelRooms + 1))}
+                            className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-100"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between border-t border-slate-100 pt-3">
+                        <span className="text-xs font-bold text-slate-700">Adults</span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setHotelAdults(Math.max(1, hotelAdults - 1))}
+                            className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-100"
+                          >
+                            -
+                          </button>
+                          <span className="w-4 text-center font-bold text-xs">{hotelAdults}</span>
+                          <button
+                            onClick={() => setHotelAdults(Math.min(10, hotelAdults + 1))}
+                            className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center hover:bg-slate-100"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => setShowHotelGuestDropdown(false)}
+                        className="w-full py-2 rounded-xl bg-[#008cff] text-white font-bold text-xs uppercase"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
+            </div>
+          )}
 
-              <div className="md:col-span-3">
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 hover:border-blue-500 transition-all">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1">
-                    <Users className="w-3.5 h-3.5 text-rose-500" />
-                    Guests &amp; Rooms
-                  </span>
+          {/* TRAINS SEARCH CARD */}
+          {activeTab === "trains" && (
+            <div className="space-y-4">
+              <div className="border border-slate-200 rounded-2xl grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white">
+                <div className="md:col-span-4 p-4 hover:bg-blue-50/40">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">From Station</span>
                   <input
                     type="text"
-                    value={hotelGuests}
-                    onChange={(e) => setHotelGuests(e.target.value)}
-                    className="bg-transparent text-slate-900 font-black text-base mt-1 outline-none w-full"
+                    value={trainFrom}
+                    onChange={(e) => setTrainFrom(e.target.value)}
+                    className="text-xl font-black text-slate-900 outline-none w-full bg-transparent mt-0.5"
                   />
-                  <div className="text-xs text-slate-500 mt-0.5">Couples &amp; Business Ready</div>
+                  <span className="text-xs text-slate-500 block truncate mt-1">NDLS, Hazrat Nizamuddin, Delhi Cantt</span>
+                </div>
+
+                <div className="md:col-span-4 p-4 hover:bg-blue-50/40">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">To Station</span>
+                  <input
+                    type="text"
+                    value={trainTo}
+                    onChange={(e) => setTrainTo(e.target.value)}
+                    className="text-xl font-black text-slate-900 outline-none w-full bg-transparent mt-0.5"
+                  />
+                  <span className="text-xs text-slate-500 block truncate mt-1">JP, Jaipur Junction &bull; Vande Bharat Express</span>
+                </div>
+
+                <div className="md:col-span-2 p-4 hover:bg-blue-50/40 relative">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Travel Date</span>
+                  <div className="text-xl font-black text-slate-900 mt-0.5">{formatDateDisplay(trainDate).dayNum} {formatDateDisplay(trainDate).monthYear}</div>
+                  <span className="text-xs text-slate-500 block mt-1">{formatDateDisplay(trainDate).dayName}</span>
+                  <input
+                    type="date"
+                    value={trainDate}
+                    onChange={(e) => setTrainDate(e.target.value)}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  />
+                </div>
+
+                <div className="md:col-span-2 p-4 hover:bg-blue-50/40">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Class</span>
+                  <select
+                    value={trainClass}
+                    onChange={(e) => setTrainClass(e.target.value)}
+                    className="text-sm font-bold text-slate-900 bg-transparent outline-none w-full mt-1 cursor-pointer"
+                  >
+                    <option value="Executive Chair Car (EC)">Executive Chair (EC)</option>
+                    <option value="AC Chair Car (CC)">AC Chair Car (CC)</option>
+                    <option value="1st AC (1A)">1st AC (1A)</option>
+                    <option value="2nd AC (2A)">2nd AC (2A)</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -620,113 +752,125 @@ export default function HeroBookingWidget({
           {/* CABS SEARCH CARD */}
           {activeTab === "cabs" && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-xs">
-                {(["Airport Transfer", "Outstation", "Hourly Rental"] as const).map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setCabType(t)}
-                    className={`px-4 py-2 rounded-xl font-bold transition-all ${
-                      cabType === t
-                        ? "bg-amber-500 text-white shadow-md shadow-amber-500/20"
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
-                    Pickup Airport / Location
-                  </span>
+              <div className="border border-slate-200 rounded-2xl grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white">
+                <div className="md:col-span-5 p-4 hover:bg-blue-50/40">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Pickup Location</span>
                   <input
                     type="text"
                     value={cabPickup}
                     onChange={(e) => setCabPickup(e.target.value)}
-                    className="bg-transparent text-slate-900 font-black text-sm outline-none w-full"
+                    className="text-lg font-black text-slate-900 outline-none w-full bg-transparent mt-0.5"
                   />
-                  <div className="text-xs text-emerald-600 font-bold mt-1">
-                    ✓ Chauffeur Waiting with Nameboard at T3 Exit
-                  </div>
+                  <span className="text-xs text-emerald-600 font-semibold block mt-1">Nameboard pickup &bull; Zero waiting charges</span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
-                    Drop Location
-                  </span>
+                <div className="md:col-span-5 p-4 hover:bg-blue-50/40">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Drop Location</span>
                   <input
                     type="text"
                     value={cabDrop}
                     onChange={(e) => setCabDrop(e.target.value)}
-                    className="bg-transparent text-slate-900 font-black text-sm outline-none w-full"
+                    className="text-lg font-black text-slate-900 outline-none w-full bg-transparent mt-0.5"
                   />
-                  <div className="text-xs text-slate-500 mt-1">
-                    Fastag expressway route included &bull; ₹500 Cancellation Shield
-                  </div>
+                  <span className="text-xs text-slate-500 font-medium block mt-1">All expressway tolls &amp; parking included</span>
+                </div>
+
+                <div className="md:col-span-2 p-4 hover:bg-blue-50/40 relative">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Pickup Date</span>
+                  <div className="text-lg font-black text-slate-900 mt-0.5">{formatDateDisplay(cabDate).dayNum} {formatDateDisplay(cabDate).monthYear}</div>
+                  <input
+                    type="date"
+                    value={cabDate}
+                    onChange={(e) => setCabDate(e.target.value)}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  />
                 </div>
               </div>
             </div>
           )}
 
-          {/* HOLIDAY SEARCH CARD */}
+          {/* HOLIDAY PACKAGES CARD */}
           {activeTab === "packages" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
-                  Dream Destination
-                </span>
+            <div className="border border-slate-200 rounded-2xl grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white p-2">
+              <div className="p-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Package Destination</span>
                 <input
                   type="text"
                   value={packageDest}
                   onChange={(e) => setPackageDest(e.target.value)}
-                  className="bg-transparent text-slate-900 font-black text-sm outline-none w-full"
+                  className="text-lg font-black text-slate-900 outline-none w-full bg-transparent mt-0.5"
                 />
-                <div className="text-xs text-slate-500 mt-1">Includes 5★ Stays + Flights + Private Car</div>
+                <span className="text-xs text-slate-500 block mt-1">Flights + 5★ Resorts + Sightseeing included</span>
               </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
-                  Month of Travel
-                </span>
-                <select className="bg-transparent text-slate-900 font-bold text-sm outline-none w-full cursor-pointer">
-                  <option value="sep">September 2026</option>
-                  <option value="oct">October 2026 (Festive Season)</option>
-                  <option value="nov">November 2026 (Pleasant Winter)</option>
-                  <option value="dec">December 2026 (Holiday Gala)</option>
-                </select>
+              <div className="p-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Preferred Month</span>
+                <div className="text-lg font-black text-slate-900 mt-0.5">September / October 2026</div>
+                <span className="text-xs text-emerald-600 font-semibold block mt-1">₹0 Cancellation with Easy Date Rescheduling</span>
               </div>
             </div>
           )}
 
-          {/* TRAINS SEARCH CARD */}
-          {activeTab === "trains" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
-                  Express Route
-                </span>
-                <div className="text-base font-black text-slate-900">New Delhi (NDLS) → Jaipur Junction (JP)</div>
-                <div className="text-xs text-slate-500">Vande Bharat Express (Train #20977)</div>
+          {/* HOMESTAYS & VILLAS CARD */}
+          {activeTab === "homestays" && (
+            <div className="border border-slate-200 rounded-2xl grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white p-2">
+              <div className="p-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Villa Location</span>
+                <input
+                  type="text"
+                  value={homestayLocation}
+                  onChange={(e) => setHomestayLocation(e.target.value)}
+                  className="text-lg font-black text-slate-900 outline-none w-full bg-transparent mt-0.5"
+                />
+                <span className="text-xs text-slate-500 block mt-1">Private chef &bull; Caretaker &bull; Pet friendly estates</span>
               </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <span className="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
-                  Seat Status
-                </span>
-                <div className="text-base font-black text-slate-900">Executive Chair Car &bull; Tomorrow</div>
-                <div className="text-xs text-emerald-600 font-bold">100% Confirmed Allocation</div>
+              <div className="p-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Guests &amp; Bedrooms</span>
+                <div className="text-lg font-black text-slate-900 mt-0.5">4-8 Guests (2-4 BHK Villas)</div>
+                <span className="text-xs text-slate-500 block mt-1">Entire private villa with private swimming pool</span>
               </div>
             </div>
           )}
 
-          {/* Iconic MakeMyTrip Centered Gradient SEARCH Button */}
-          <div className="mt-8 flex justify-center">
+          {/* BUSES CARD */}
+          {activeTab === "buses" && (
+            <div className="border border-slate-200 rounded-2xl grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white p-2">
+              <div className="p-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Route</span>
+                <div className="text-lg font-black text-slate-900 mt-0.5">{busFrom} → {busTo}</div>
+                <span className="text-xs text-slate-500 block mt-1">Volvo Multi-Axle 9600 AC Sleeper with Live GPS</span>
+              </div>
+              <div className="p-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Departure</span>
+                <div className="text-lg font-black text-slate-900 mt-0.5">Tonight / Tomorrow Evening</div>
+                <span className="text-xs text-emerald-600 font-semibold block mt-1">On-time departure guarantee</span>
+              </div>
+            </div>
+          )}
+
+          {/* INSURANCE CARD */}
+          {activeTab === "insurance" && (
+            <div className="border border-slate-200 rounded-2xl grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white p-2">
+              <div className="p-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Domestic Travel Shield</span>
+                <div className="text-lg font-black text-slate-900 mt-0.5">₹10 Lakh Medical &amp; Delay Coverage</div>
+                <span className="text-xs text-slate-500 block mt-1">Instant UPI payout on flight cancellations starting @ ₹99</span>
+              </div>
+              <div className="p-4">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Coverage Scope</span>
+                <div className="text-lg font-black text-slate-900 mt-0.5">Baggage Loss + Medical Cashless</div>
+                <span className="text-xs text-emerald-600 font-semibold block mt-1">500+ Indian network hospitals</span>
+              </div>
+            </div>
+          )}
+
+          {/* MAKEMYTRIP ICONIC CENTERED FLOATING SEARCH BUTTON */}
+          <div className="mt-8 flex justify-center w-full">
             <button
               onClick={handleExecuteSearch}
-              className="px-16 sm:px-24 py-4 rounded-full bg-gradient-to-r from-sky-400 via-blue-600 to-indigo-700 hover:from-sky-500 hover:to-indigo-800 text-white font-black text-base sm:text-lg tracking-widest shadow-2xl shadow-blue-600/40 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 uppercase cursor-pointer"
+              className="w-full sm:w-auto px-12 py-3.5 rounded-full mmt-btn-gradient text-white font-black text-base tracking-widest shadow-xl shadow-blue-500/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase cursor-pointer"
             >
-              <Search className="w-6 h-6 text-white" />
-              <span>SEARCH {activeTab.toUpperCase()}</span>
+              <Search className="w-5 h-5 text-white" />
+              <span>SEARCH {activeTab === "homestays" ? "STAYS" : activeTab.toUpperCase()}</span>
             </button>
           </div>
         </div>

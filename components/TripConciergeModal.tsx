@@ -33,7 +33,7 @@ export default function TripConciergeModal({
       sender: "bot",
       text: "Hello! I am your AI Travel Concierge. I can help you find flights with zero fog delays, luxury stays near DLF CyberHub with verified quiet rooms, or guide you through Gurgaon's top hotspots.",
       action: {
-        label: "Explore Gurgaon Millennium City Wiki",
+        label: "Explore Gurgaon Millennium City Guide",
         onClick: () => {
           onOpenWiki("gurgaon");
           onClose();
@@ -89,9 +89,9 @@ export default function TripConciergeModal({
           }
         };
       } else {
-        botReply = "Gurgaon (Gurugram) is known as the Millennium City. Check out our detailed Wikipedia guide covering the legend of Guru Dronacharya, Sector 29 breweries, Sultanpur Bird Sanctuary, and Rapid Metro!";
+        botReply = "Gurgaon (Gurugram) is known as the Millennium City. Check out our detailed TravelGo guide covering the legend of Guru Dronacharya, Sector 29 breweries, Sultanpur Bird Sanctuary, and Rapid Metro!";
         actionObj = {
-          label: "Open Gurgaon Wiki Guide",
+          label: "Open Gurgaon City Guide",
           onClick: () => {
             onOpenWiki("gurgaon");
             onClose();

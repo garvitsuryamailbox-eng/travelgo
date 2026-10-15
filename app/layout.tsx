@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TravelGo - MakeMyTrip Booking & Wikipedia Travel Guide",
-  description: "Book flights, hotels in Gurgaon Cyber City, airport cabs, and explore comprehensive Wikipedia destination guides with verified travel insights.",
-  keywords: "MakeMyTrip, travel booking, Gurgaon, Gurugram, Wikipedia travel guide, Cyber City, flights, luxury hotels, Delhi NCR, airport cabs"
+  title: "TravelGo — Plan Your Trip. Know the Cost. Then Book.",
+  description: "TravelGo is a travel planning prototype. Discover complete trip costs, budget-based destinations, and flight comparisons — all with transparent demo pricing before you book.",
+  keywords: "travel planning India, trip budget calculator, flight comparison demo, complete trip cost, TravelGo, itinerary planner"
 };
 
 export default function RootLayout({
@@ -13,8 +13,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-[#060810] text-slate-100 antialiased selection:bg-blue-600 selection:text-white">
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+      </head>
+      <body className="min-h-screen bg-[#f2f5f8] text-slate-800 antialiased selection:bg-blue-600 selection:text-white font-sans">
         {children}
       </body>
     </html>

@@ -32,6 +32,8 @@ interface BookingModalProps {
   currency: "INR" | "USD";
   onBookingSuccess: (newBooking: any) => void;
   prefilledPromo?: string;
+  onShowToast?: (msg: { type: "success" | "info" | "error"; title: string; message?: string }) => void;
+  onViewPrintableTicket?: (booking: any) => void;
 }
 
 export default function BookingModal({
@@ -41,7 +43,9 @@ export default function BookingModal({
   type,
   currency,
   onBookingSuccess,
-  prefilledPromo = ""
+  prefilledPromo = "",
+  onShowToast,
+  onViewPrintableTicket
 }: BookingModalProps) {
   if (!isOpen || !item) return null;
 
@@ -58,7 +62,6 @@ export default function BookingModal({
   const [refundShieldEnabled, setRefundShieldEnabled] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState<"upi" | "card" | "netbanking">("upi");
   const [generatedTicket, setGeneratedTicket] = useState<any>(null);
-  const [whatsappSent, setWhatsappSent] = useState(false);
 
   // Price Calculation
   const basePrice = item.priceINR || item.pricePerNightINR || item.basePriceINR || item.pricePerPersonINR || 5000;
@@ -78,15 +81,35 @@ export default function BookingModal({
     if (code === "TRAVELGO500") {
       setDiscountAmount(500);
       setPromoApplied(true);
-    } else if (code === "GURGAONWIKI" || code === "MILLENNIUMCITY") {
-      setDiscountAmount(Math.round(basePrice * 0.2));
+      onShowToast?.({
+        type: "success",
+        title: "Promo Code Applied!",
+        message: "₹500 instant discount deducted from your total fare."
+      });
+    } else if (code === "GURGAON20" || code === "MILLENNIUMCITY") {
+      const discount = Math.round(basePrice * 0.2);
+      setDiscountAmount(discount);
       setPromoApplied(true);
+      onShowToast?.({
+        type: "success",
+        title: "City Promo Applied!",
+        message: `Flat 20% discount (₹${discount.toLocaleString("en-IN")}) applied successfully.`
+      });
     } else if (code === "CABGO150") {
       setDiscountAmount(150);
       setPromoApplied(true);
+      onShowToast?.({
+        type: "success",
+        title: "Cab Discount Applied!",
+        message: "₹150 deducted from your airport transfer."
+      });
     } else {
-      alert("Invalid coupon code. Try TRAVELGO500 or GURGAONWIKI");
       setPromoApplied(false);
+      onShowToast?.({
+        type: "error",
+        title: "Invalid Promo Code",
+        message: "Please try TRAVELGO500, GURGAON20 or CABGO150."
+      });
     }
   };
 
@@ -154,6 +177,16 @@ export default function BookingModal({
         {/* STEP 1: DETAILS & CHECKOUT */}
         {step === "details" && (
           <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+
+            {/* ⚠️ DEMO Disclaimer */}
+            <div className="flex items-start gap-2.5 px-4 py-3 rounded-2xl bg-amber-50 border border-amber-300">
+              <span className="text-amber-500 text-base shrink-0">⚠️</span>
+              <div>
+                <p className="text-xs font-black text-amber-800">DEMO CHECKOUT — No real payment will be processed.</p>
+                <p className="text-[11px] text-amber-700 mt-0.5">This is a portfolio prototype. All prices are sample estimates. No money will be charged.</p>
+              </div>
+            </div>
+
             {/* Summary Box */}
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -244,28 +277,216 @@ export default function BookingModal({
               </div>
             </div>
 
-            {/* Promo Code */}
+            {/* Interactive Preference Customizer Tier */}
+            <div className="space-y-2 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
+              <span className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center justify-between">
+                <span>
+                  {type === "hotel" ? "🏨 Select Room Category" : type === "cab" ? "🚖 Choose Vehicle Tier" : "💺 Seat Allocation"}
+                </span>
+                <span className="text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-black">
+                  INSTANT ALLOCATION
+                </span>
+              </span>
+
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                {type === "hotel" ? (
+                  <>
+                    <button
+                      type="button"
+                      className="p-2.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-800 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">Deluxe Suite</div>
+                      <div className="text-[10px] text-blue-600">Included</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onShowToast?.({
+                          type: "info",
+                          title: "Executive Club Room Selected",
+                          message: "Includes complimentary CyberHub evening lounge access."
+                        })
+                      }
+                      className="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-400 text-slate-700 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">Executive Club</div>
+                      <div className="text-[10px] text-slate-500">+₹1,200</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onShowToast?.({
+                          type: "info",
+                          title: "Presidential Luxury Suite Selected",
+                          message: "Includes private butler service & airport transfer."
+                        })
+                      }
+                      className="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-400 text-slate-700 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">Presidential Suite</div>
+                      <div className="text-[10px] text-slate-500">+₹2,500</div>
+                    </button>
+                  </>
+                ) : type === "cab" ? (
+                  <>
+                    <button
+                      type="button"
+                      className="p-2.5 rounded-xl border border-amber-600 bg-amber-50 text-amber-900 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">AC Sedan</div>
+                      <div className="text-[10px] text-amber-700">Dzire / Etios</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onShowToast?.({
+                          type: "info",
+                          title: "Innova Crysta SUV Selected",
+                          message: "Spacious 6-seater with extra luggage carrier."
+                        })
+                      }
+                      className="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-amber-400 text-slate-700 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">Innova Crysta</div>
+                      <div className="text-[10px] text-slate-500">6 Seater SUV</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onShowToast?.({
+                          type: "info",
+                          title: "Executive Luxury Chauffeur Selected",
+                          message: "Mercedes E-Class / BMW 5 Series VIP Meet & Greet."
+                        })
+                      }
+                      className="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-amber-400 text-slate-700 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">Luxury Mercedes</div>
+                      <div className="text-[10px] text-slate-500">VIP Chauffeur</div>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className="p-2.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-800 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">Window 14A</div>
+                      <div className="text-[10px] text-blue-600">Free Choice</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onShowToast?.({
+                          type: "info",
+                          title: "Aisle Seat 14C Allocated",
+                          message: "Direct aisle access for quick deboarding."
+                        })
+                      }
+                      className="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-400 text-slate-700 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">Aisle 14C</div>
+                      <div className="text-[10px] text-slate-500">Free Choice</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onShowToast?.({
+                          type: "info",
+                          title: "Extra Legroom Seat 1A Allocated",
+                          message: "Fast priority exit with extra legroom."
+                        })
+                      }
+                      className="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-400 text-slate-700 font-bold text-left transition-all"
+                    >
+                      <div className="font-black text-xs">Legroom 1A</div>
+                      <div className="text-[10px] text-slate-500">Front Row</div>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Promo Code with 1-Click Interactive Chips */}
             <div className="space-y-2">
-              <label className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5 text-blue-600" />
-                Apply Coupon Code
+              <label className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5 text-blue-600" />
+                  Apply Coupon Code
+                </span>
+                <span className="text-[11px] text-slate-400 font-normal">Click a coupon below to apply</span>
               </label>
+
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="e.g. TRAVELGO500"
                   className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs uppercase font-mono font-bold outline-none focus:border-blue-500"
                 />
                 <button
+                  type="button"
                   onClick={handleApplyPromo}
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase transition-colors"
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black uppercase transition-colors shadow-sm active:scale-95"
                 >
                   Apply
                 </button>
               </div>
+
+              {/* 1-Click Promo Chips */}
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
+                {[
+                  { code: "TRAVELGO500", desc: "₹500 OFF" },
+                  { code: "GURGAON20", desc: "20% OFF Stays" },
+                  { code: "CABGO150", desc: "₹150 OFF Cabs" }
+                ].map((cp) => (
+                  <button
+                    key={cp.code}
+                    type="button"
+                    onClick={() => {
+                      setPromoCode(cp.code);
+                      const base = basePrice;
+                      if (cp.code === "TRAVELGO500") {
+                        setDiscountAmount(500);
+                        setPromoApplied(true);
+                        onShowToast?.({
+                          type: "success",
+                          title: "TRAVELGO500 Applied!",
+                          message: "₹500 deducted from total fare."
+                        });
+                      } else if (cp.code === "GURGAON20") {
+                        const disc = Math.round(base * 0.2);
+                        setDiscountAmount(disc);
+                        setPromoApplied(true);
+                        onShowToast?.({
+                          type: "success",
+                          title: "GURGAON20 Applied!",
+                          message: `20% discount (₹${disc}) applied.`
+                        });
+                      } else if (cp.code === "CABGO150") {
+                        setDiscountAmount(150);
+                        setPromoApplied(true);
+                        onShowToast?.({
+                          type: "success",
+                          title: "CABGO150 Applied!",
+                          message: "₹150 deducted from airport transfer."
+                        });
+                      }
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all whitespace-nowrap ${
+                      promoCode === cp.code && promoApplied
+                        ? "bg-emerald-50 border-emerald-400 text-emerald-800"
+                        : "bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200"
+                    }`}
+                  >
+                    🏷️ <strong>{cp.code}</strong> ({cp.desc})
+                  </button>
+                ))}
+              </div>
+
               {promoApplied && (
-                <div className="text-xs text-emerald-600 font-bold flex items-center gap-1">
+                <div className="text-xs text-emerald-600 font-bold flex items-center gap-1 pt-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   Code applied! You saved {formatPrice(discountAmount)}.
                 </div>
@@ -301,6 +522,31 @@ export default function BookingModal({
               <div className="border-t border-slate-200 pt-2 flex justify-between font-black text-sm text-slate-900">
                 <span>Total Payable:</span>
                 <span className="text-blue-600 text-base">{formatPrice(finalPrice)}</span>
+              </div>
+            </div>
+
+            {/* Cancellation Preview */}
+            <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4 space-y-2 text-xs">
+              <div className="flex items-center gap-1.5 font-black text-rose-800 text-[11px] uppercase tracking-wider mb-1">
+                <Lock className="w-3.5 h-3.5" />
+                Cancellation Preview (Demo)
+              </div>
+              <div className="flex justify-between text-slate-600 font-medium">
+                <span>Amount to be paid:</span>
+                <span className="font-bold">{formatPrice(finalPrice)}</span>
+              </div>
+              <div className="flex justify-between text-emerald-700 font-medium">
+                <span>Est. refundable amount:</span>
+                <span className="font-bold">{formatPrice(Math.round(finalPrice * (refundShieldEnabled ? 1.0 : 0.8)))}</span>
+              </div>
+              <div className="flex justify-between text-rose-600 font-medium">
+                <span>Est. non-refundable:</span>
+                <span className="font-bold">{formatPrice(Math.round(finalPrice * (refundShieldEnabled ? 0 : 0.2)))}</span>
+              </div>
+              <div className="pt-1 border-t border-rose-200 text-[10px] text-slate-500">
+                {refundShieldEnabled
+                  ? "Refund Shield active — 100% refund on cancellation (demo policy)."
+                  : "Standard policy: ~20% cancellation charge (demo estimate only)."}
               </div>
             </div>
 
@@ -341,10 +587,11 @@ export default function BookingModal({
         {step === "processing" && (
           <div className="p-12 text-center space-y-4">
             <div className="w-14 h-14 rounded-full border-4 border-blue-600 border-t-transparent animate-spin mx-auto" />
-            <h3 className="text-lg font-black text-slate-900">Confirming Your Reservation...</h3>
+            <h3 className="text-lg font-black text-slate-900">Simulating Booking...</h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              Connecting with reservation engine to allocate confirmed seats and DigiYatra pass.
+              Generating your demo booking confirmation and PNR code.
             </p>
+            <p className="text-[10px] text-amber-600 font-bold">⚠️ Demo only — no real reservation is being made</p>
           </div>
         )}
 
@@ -406,14 +653,20 @@ export default function BookingModal({
                   <span>Receive Boarding Pass on WhatsApp</span>
                 </div>
                 <button
-                  onClick={() => alert(`Boarding pass sent to WhatsApp at ${phone}!`)}
-                  className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-black shadow-sm"
+                  onClick={() =>
+                    onShowToast?.({
+                      type: "success",
+                      title: "Boarding Pass Sent!",
+                      message: `Official DigiYatra Boarding Pass has been sent to WhatsApp number ${phone}.`
+                    })
+                  }
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-sm transition-all"
                 >
                   Send to WhatsApp
                 </button>
               </div>
 
-              {/* QR Code */}
+              {/* QR Code & Printable Ticket Button */}
               <div className="border-t border-dashed border-slate-200 pt-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white p-1 rounded-xl border border-slate-200 flex items-center justify-center shadow-sm">
@@ -427,18 +680,17 @@ export default function BookingModal({
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => window.print()}
-                    className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
-                    title="Print"
-                  >
-                    <Printer className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => alert("E-Ticket downloaded.")}
-                    className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700"
+                    onClick={() => {
+                      if (onViewPrintableTicket) {
+                        onViewPrintableTicket(generatedTicket);
+                      } else {
+                        window.print();
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-black hover:bg-blue-700 shadow-md shadow-blue-500/20 active:scale-95 transition-all"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    <span>Download PDF</span>
+                    <span>View &amp; Print Pass</span>
                   </button>
                 </div>
               </div>
@@ -446,7 +698,7 @@ export default function BookingModal({
 
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors"
+              className="w-full py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-black uppercase tracking-wider transition-colors"
             >
               Done / Return to Home
             </button>

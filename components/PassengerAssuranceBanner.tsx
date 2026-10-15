@@ -1,52 +1,61 @@
 "use client";
 
 import React from "react";
-import { Lock, Zap, Car, Building2 } from "lucide-react";
+import { Lock, Zap, Car, ShieldCheck } from "lucide-react";
 
 export default function PassengerAssuranceBanner() {
   const trustPillars = [
     {
       icon: Lock,
-      title: "100% Upfront Pricing",
-      desc: "Zero surprise fees at checkout",
-      bg: "bg-blue-50 text-blue-600 border-blue-100"
+      title: "Transparent Pricing",
+      desc: "See full cost breakdown — base fare, taxes & extras — before booking",
+      tag: "No Hidden Fees",
+      iconBg: "bg-blue-50 text-blue-600"
     },
     {
       icon: Zap,
-      title: "Instant 2-Min Refund",
-      desc: "Direct UPI & Bank auto-credit",
-      bg: "bg-emerald-50 text-emerald-600 border-emerald-100"
+      title: "Clear Cancellation Terms",
+      desc: "Refundable vs non-refundable shown upfront on every flight & hotel",
+      tag: "Pre-Booking Info",
+      iconBg: "bg-emerald-50 text-emerald-600"
     },
     {
       icon: Car,
-      title: "Guaranteed Cabs",
-      desc: "₹500 compensation if driver cancels",
-      bg: "bg-amber-50 text-amber-600 border-amber-100"
+      title: "Complete Trip Cost",
+      desc: "Flight + hotel + transfers + food — see the full estimate in one view",
+      tag: "Full Breakdown",
+      iconBg: "bg-amber-50 text-amber-600"
     },
     {
-      icon: Building2,
-      title: "Verified Locations",
-      desc: "True rush-hour commute radar",
-      bg: "bg-purple-50 text-purple-600 border-purple-100"
+      icon: ShieldCheck,
+      title: "Plan Before You Book",
+      desc: "Trip Planner, Budget Discovery & Surprise Me — explore first",
+      tag: "Plan First",
+      iconBg: "bg-sky-50 text-sky-600"
     }
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {trustPillars.map((item, idx) => {
           const Icon = item.icon;
           return (
             <div
               key={idx}
-              className="flex items-center gap-3.5 bg-white border border-slate-200/80 rounded-2xl p-3.5 shadow-sm hover:shadow-md transition-all"
+              className="flex items-center gap-3.5 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all group"
             >
-              <div className={`w-10 h-10 rounded-2xl flex items-center justify-center border shrink-0 ${item.bg}`}>
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform ${item.iconBg}`}>
                 <Icon className="w-5 h-5" />
               </div>
-              <div className="min-w-0">
-                <div className="text-xs font-black text-slate-900 truncate">{item.title}</div>
-                <div className="text-[11px] text-slate-500 truncate mt-0.5">{item.desc}</div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-xs font-black text-slate-900 truncate">{item.title}</span>
+                  <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
+                    {item.tag}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{item.desc}</p>
               </div>
             </div>
           );
