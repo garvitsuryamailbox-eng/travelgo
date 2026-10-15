@@ -204,7 +204,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f2f5f8] text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#f2f5f8] text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white w-full max-w-full overflow-x-hidden">
       {/* Toast Notification Layer */}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
