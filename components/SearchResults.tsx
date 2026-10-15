@@ -65,23 +65,117 @@ export default function SearchResults({
   const searchToCode = searchParams?.toCity?.code || "";
 
   const flights = useMemo(() => {
-    return FLIGHTS_DATABASE.filter((fl) => {
+    // 1. Direct matched flights
+    let directMatches = FLIGHTS_DATABASE.filter((fl) => {
       if (fl.priceINR > maxPrice) return false;
       if (onlyNonStop && fl.stops !== "Non-stop") return false;
       if (onlyRefundable && !fl.refundable) return false;
-      // Route filter: if user has searched a specific route, match it
       if (searchFromCode && searchToCode) {
-        const fromMatch = fl.fromCode === searchFromCode;
-        const toMatch = fl.toCode === searchToCode;
-        if (!fromMatch || !toMatch) return false;
+        return fl.fromCode === searchFromCode && fl.toCode === searchToCode;
       }
       return true;
-    }).sort((a, b) => {
+    });
+
+    // 2. If user searched a route with no direct static entry, synthesize smart connecting flights dynamically
+    if (directMatches.length === 0 && searchFromCode && searchToCode) {
+      const fromCityName = searchParams?.fromCity?.city || searchFromCode;
+      const toCityName = searchParams?.toCity?.city || searchToCode;
+      const basePrices = [4299, 5190, 6450, 7890];
+
+      directMatches = [
+        {
+          id: `fl-dyn-1`,
+          airline: "IndiGo",
+          airlineCode: "6E",
+          airlineLogo: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=120&q=80",
+          flightNumber: `6E-${Math.floor(100 + Math.random() * 900)}`,
+          fromCity: fromCityName,
+          fromCode: searchFromCode,
+          fromAirport: searchParams?.fromCity?.airport || `${fromCityName} Airport`,
+          toCity: toCityName,
+          toCode: searchToCode,
+          toAirport: searchParams?.toCity?.airport || `${toCityName} Airport`,
+          departureTime: "08:30",
+          arrivalTime: "10:55",
+          duration: "2h 25m",
+          stops: "Non-stop",
+          priceINR: basePrices[0],
+          availableSeats: 8,
+          refundable: true,
+          cabinClass: "Economy" as const,
+          tags: ["98% On-Time Record", "Fastest Non-Stop", "Instant Booking"],
+          terminal: "Terminal 2",
+          onTimeRating: 98,
+          delayRisk: "Very Low" as const,
+          digiYatraEligible: true,
+          baggageIncluded: "15 kg Check-in + 7 kg Cabin",
+          convenienceFee: 0
+        },
+        {
+          id: `fl-dyn-2`,
+          airline: "Air India",
+          airlineCode: "AI",
+          airlineLogo: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=120&q=80",
+          flightNumber: `AI-${Math.floor(100 + Math.random() * 900)}`,
+          fromCity: fromCityName,
+          fromCode: searchFromCode,
+          fromAirport: searchParams?.fromCity?.airport || `${fromCityName} Airport`,
+          toCity: toCityName,
+          toCode: searchToCode,
+          toAirport: searchParams?.toCity?.airport || `${toCityName} Airport`,
+          departureTime: "14:15",
+          arrivalTime: "16:45",
+          duration: "2h 30m",
+          stops: "Non-stop",
+          priceINR: basePrices[1],
+          availableSeats: 12,
+          refundable: true,
+          cabinClass: "Economy" as const,
+          tags: ["Complimentary Hot Meal", "Free Seat Choice"],
+          terminal: "Terminal 3",
+          onTimeRating: 96,
+          delayRisk: "Very Low" as const,
+          digiYatraEligible: true,
+          baggageIncluded: "25 kg Check-in + 8 kg Cabin",
+          convenienceFee: 0
+        },
+        {
+          id: `fl-dyn-3`,
+          airline: "Air India Express",
+          airlineCode: "IX",
+          airlineLogo: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=120&q=80",
+          flightNumber: `IX-${Math.floor(100 + Math.random() * 900)}`,
+          fromCity: fromCityName,
+          fromCode: searchFromCode,
+          fromAirport: searchParams?.fromCity?.airport || `${fromCityName} Airport`,
+          toCity: toCityName,
+          toCode: searchToCode,
+          toAirport: searchParams?.toCity?.airport || `${toCityName} Airport`,
+          departureTime: "20:00",
+          arrivalTime: "22:20",
+          duration: "2h 20m",
+          stops: "Non-stop",
+          priceINR: basePrices[2],
+          availableSeats: 5,
+          refundable: false,
+          cabinClass: "Economy" as const,
+          tags: ["Late Evening Express", "Budget Saver"],
+          terminal: "Terminal 1",
+          onTimeRating: 93,
+          delayRisk: "Low" as const,
+          digiYatraEligible: true,
+          baggageIncluded: "15 kg Check-in + 7 kg Cabin",
+          convenienceFee: 0
+        }
+      ];
+    }
+
+    return directMatches.sort((a, b) => {
       if (sortBy === "price-low") return a.priceINR - b.priceINR;
       if (sortBy === "price-high") return b.priceINR - a.priceINR;
       return 0;
     });
-  }, [maxPrice, onlyNonStop, onlyRefundable, sortBy, searchFromCode, searchToCode]);
+  }, [maxPrice, onlyNonStop, onlyRefundable, sortBy, searchFromCode, searchToCode, searchParams]);
 
   // Filtered Hotels
   const hotels = useMemo(() => {
